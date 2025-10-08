@@ -5,9 +5,11 @@
 <article>
   <nav class="navbar">
     <ul>
-      <li><a id="homeLink" href="index.html">Inicio</a></li>
-      <li><a id="ingresoLink" href="invitado-ingreso-presenter.html">Ingreso</a></li>
-      <li><a id="registroLink" href="invitado-registro-presenter.html">Registro</a></li>
+      <li><a id="homeLink" href="index.html" data-link>Inicio</a></li>
+      <li><a id="ingresoLink" href="./invitado-ingreso.html" data-link>Ingreso</a></li>
+      <li><a id="registroLink" href="./invitado-registro.html" data-link>Registro</a></li>
+
+    
     </ul>
   </nav>
   <div class="contenido">
@@ -29,4 +31,14 @@
       <small>20 de septiembre de 2021</small>
     </footer>
   </div>
+<script type="module">
+  document.addEventListener("DOMContentLoaded", () => { //espera a que el DOM esté cargado
+    document.querySelectorAll('a[data-link]').forEach(link => { //selecciona todos los enlaces con data-link
+      link.addEventListener('click', function(e) { //añade un listener a cada enlace
+        e.preventDefault(); //evita que se recargue la página
+        router.navigate(this.getAttribute('href')); //navega usando el router
+      });
+    });
+  });
+</script>
 </article>

@@ -1,6 +1,7 @@
 import { Presenter } from "../../commons/presenter.mjs";
 import { InvitadoCatalogoLibroPresenter } from "../invitado-catalogo-libro/invitado-catalogo-libro-presenter.mjs";
 
+
 export class InvitadoHomePresenter extends Presenter {
   constructor(model, view) {
     super(model, view);
