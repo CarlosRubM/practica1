@@ -1,9 +1,9 @@
 import { Presenter } from "../../commons/presenter.mjs";
+import { LibreriaSession } from "../../commons/libreria-session.mjs";
 
 export class InvitadoRegistroPresenter extends Presenter {
   constructor(model, view) {
     super(model, view);
-    this.bindEvents();
   }
 
   bindEvents() {
@@ -38,21 +38,27 @@ export class InvitadoRegistroPresenter extends Presenter {
       }
 
       // Intentar registrar usuario usando el modelo existente
-      const nuevoUsuario = this.model.addUsuario(formData);
+      this.model.addUsuario(formData);
+      
+      // Buscar el usuario recién creado por email para confirmar
+      const nuevoUsuario = this.model.getUsuarioPorEmail(formData.email);
       
       if (nuevoUsuario) {
-        this.mostrarMensaje('Usuario registrado exitosamente', 'success');
+        // Guardar mensaje en sesión para mostrarlo en la siguiente página
+        LibreriaSession.setSuccessMessage('Usuario registrado exitosamente');
         
-        // Opcional: limpiar formulario
+        // Limpiar formulario
         this.limpiarFormulario();
         
-        // Opcional: redirigir al ingreso después de un tiempo
+        // Redirigir a index.html
         setTimeout(() => {
-          window.location.href = 'invitado-ingreso-presenter.html';
-        }, 2000);
-        
-      } else {
-        this.mostrarMensaje('Error al registrar usuario', 'error');
+          window.history.pushState(null, '', '/libreria/index.html');
+          if (typeof router !== 'undefined') {
+            router.handleLocation();
+          } else {
+            window.location.href = '/libreria/index.html';
+          }
+        }, 500); // Reducido a 0.5s ya que el mensaje se mostrará en la página destino
       }
       
     } catch (error) {
@@ -71,6 +77,7 @@ export class InvitadoRegistroPresenter extends Presenter {
 
   getFormData() {
     return {
+      dni: document.getElementById('dni').value.trim(),
       nombre: document.getElementById('nombre').value.trim(),
       apellidos: document.getElementById('apellidos').value.trim(),
       direccion: document.getElementById('direccion').value.trim(),
@@ -82,6 +89,18 @@ export class InvitadoRegistroPresenter extends Presenter {
 
   validateForm(data) {
     // Validaciones básicas
+    if (!data.dni) {
+      this.mostrarMensaje('El DNI es obligatorio', 'error');
+      return false;
+    }
+
+    // Valida DNI/NIF español: 8 dígitos + letra
+    const dniRegex = /^[0-9]{8}[A-Za-z]$/;
+    if (!dniRegex.test(data.dni)) {
+      this.mostrarMensaje('El DNI debe tener 8 dígitos y una letra (ej: 00000000A)', 'error');
+      return false;
+    }
+    
     if (!data.nombre) {
       this.mostrarMensaje('El nombre es obligatorio', 'error');
       return false;
@@ -139,6 +158,16 @@ export class InvitadoRegistroPresenter extends Presenter {
       setTimeout(() => {
         container.innerHTML = '';
       }, 5000);
+    }
+  }
+
+  displaySessionMessages() {
+    // Recuperar y mostrar mensajes guardados en LibreriaSession
+    const mensaje = LibreriaSession.getMessage();
+    
+    if (mensaje) {
+      this.mostrarMensaje(mensaje.texto, mensaje.tipo);
+      LibreriaSession.clearMessage(); // Limpiar después de mostrar
     }
   }
 
