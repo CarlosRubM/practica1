@@ -6,27 +6,23 @@
   <nav class="navbar">
     <ul>
       <li><a id="homeLink" href="index.html">Inicio</a></li>
-      <li><a id="ingresoLink" href="invitado-ingreso-presenter.html">Ingreso</a></li>
+      <li><a id="ingresoLink" href="invitado-ingreso.html">Ingreso</a></li>
       <li><a id="registroLink" href="invitado-registro.html">Registro</a></li>
     </ul>
   </nav>
   <div class="contenido">
     <nav class="toolbar">
-      <!-- <ul>
-        <li><a id="ingresoToolbarLink" href="#" class="toolbar-link">Ingreso</a></li>
-        <li><a id="registroToolbarLink" href="#" class="toolbar-link active">Registro</a></li>
-      </ul> -->
+      <!-- Toolbar comentado -->
     </nav>
     <div class="info">
       <div class="mensajes-container" id="mensajesContainer"></div>
-
+      <!-- FORMULARIO DE REGISTRO -->
       <form id="registroForm" class="registro-form">
         <div class="form-group">
-          <label for="nombre">DNI</label>
+          <label for="dni">DNI</label>
           <input type="text" id="dni" name="dni" placeholder="DNI" required>
         </div>
-      
-      <form id="registroForm" class="registro-form">
+
         <div class="form-group">
           <label for="nombre">Nombre</label>
           <input type="text" id="nombre" name="nombre" placeholder="Nombre" required>
@@ -53,13 +49,12 @@
         </div>
         
         <div class="form-group">
-            <label for="rol">Rol</label>
-            <select id="rol" name="rol" required>
-                <option value="CLIENTE" selected>CLIENTE</option>
-                <option value="ADMIN">ADMINISTRADOR</option>
-            </select>
+          <label for="rol">Rol</label>
+          <select id="rol" name="rol" required>
+            <option value="CLIENTE" selected>CLIENTE</option>
+            <option value="ADMIN">ADMINISTRADOR</option>
+          </select>
         </div>
-
         
         <div class="form-actions">
           <button type="submit" id="registroBtn" class="btn-registro">Registro</button>

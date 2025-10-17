@@ -43,7 +43,6 @@ export class Presenter {
     try {
       this.parentElement.innerHTML = await this.getHTML();
       this.attachAnchors();
-      this.displaySessionMessages(); // Muestra lo guardado en LibreriaSession
     } catch (err) {
       console.error(err);
     }

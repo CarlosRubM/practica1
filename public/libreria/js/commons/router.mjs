@@ -1,6 +1,6 @@
 class Router {
   static _instance;
-  routes;
+  routers; //estaba mal escrito
   presenters;
 
   static get instance() {
@@ -53,16 +53,22 @@ class Router {
   }
 
   async handleLocation() {
-    console.log('Refreshing presenter', this.localLocation);
+    let url = this.localLocation; // ✅ Agregado: definir url al inicio
+    console.log('Refreshing presenter', url);
+    
     if (!this.presenter) {
-      // cambiar por recursivo
       console.error(`${url} not found`);
       url = '/not-found?url=' + encodeURIComponent(url);
       window.history.replaceState({}, '', url);
-      index = 0;
-      this.presenters[index].refresh();
+      const index = 0; // ✅ Corregido: definir con const/let
+      
+      // ✅ Agregado: verificar que existe el presenter antes de llamarlo
+      if (this.presenters[index]) {
+        this.presenters[index].refresh();
+      }
+    } else {
+      await this.presenter.refresh();
     }
-    else await this.presenter.refresh();
   }
 }
 

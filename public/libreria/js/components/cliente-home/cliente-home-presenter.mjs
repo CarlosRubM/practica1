@@ -1,8 +1,9 @@
-import { Presenter } from "../../commons/presenter.mjs";
-import { InvitadoCatalogoLibroPresenter } from "../invitado-catalogo-libro/invitado-catalogo-libro-presenter.mjs";
 import { libreriaSession } from "../../commons/libreria-session.mjs";
+import { Presenter } from "../../commons/presenter.mjs";
+import { router } from "../../commons/router.mjs";
 
-export class InvitadoHomePresenter extends Presenter {
+
+export class ClienteHomePresenter extends Presenter {
   constructor(model, view) {
     super(model, view);
   }
@@ -10,10 +11,20 @@ export class InvitadoHomePresenter extends Presenter {
   get catalogoElement() {
     return document.querySelector("#catalogo");
   }
+  get salirLink() {
+    return document.querySelector('#salirLink');
+  }
+
+  async salirClick(event) {
+    event.preventDefault();
+    libreriaSession.salir();
+    router.navigate('/libreria/index.html');
+  }
 
 
   async refresh() {
     await super.refresh();
+    this.salirLink.onclick = event => this.salirClick(event);
     let libros = this.model.getLibros();
 
     await Promise.all(
