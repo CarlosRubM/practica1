@@ -1,10 +1,12 @@
 import { Presenter } from "../../commons/presenter.mjs";
 import { InvitadoCatalogoLibroPresenter } from "../invitado-catalogo-libro/invitado-catalogo-libro-presenter.mjs";
 import { libreriaSession } from "../../commons/libreria-session.mjs";
+import { MensajesPresenter } from "../mensajes/mensajes-presenter.mjs";
 
 export class InvitadoHomePresenter extends Presenter {
   constructor(model, view) {
     super(model, view);
+    this.mensajesPresenter = new MensajesPresenter(model, 'mensajes', '#mensajesContainer');
   }
 
   get catalogoElement() {
@@ -14,6 +16,7 @@ export class InvitadoHomePresenter extends Presenter {
 
   async refresh() {
     await super.refresh();
+    await this.mensajesPresenter.refresh();
     let libros = this.model.getLibros();
 
     await Promise.all(

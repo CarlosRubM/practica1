@@ -1,10 +1,12 @@
 import { Presenter } from "../../commons/presenter.mjs";
 import { router } from "../../commons/router.mjs";
 import { libreriaSession } from "../../commons/libreria-session.mjs";
+import { MensajesPresenter } from "../mensajes/mensajes-presenter.mjs";
 
 export class InvitadoIngresoPresenter extends Presenter {
   constructor(model, view) {
     super(model, view);
+    this.mensajesPresenter = new MensajesPresenter(model, 'mensajes', '#mensajesContainer');
   }
 
   get ingresoButton() {
@@ -52,6 +54,7 @@ export class InvitadoIngresoPresenter extends Presenter {
       console.log(usuario);
 
       libreriaSession.ingreso(usuario);
+      this.mensajesPresenter.mensaje(`Bienvenido ${usuario.nombre} ${usuario.apellidos}!`);
       console.log(
         libreriaSession,
         libreriaSession.esAdmin(),
@@ -67,11 +70,14 @@ export class InvitadoIngresoPresenter extends Presenter {
       }
     } catch (e) {
       console.error(e);
+       this.mensajesPresenter.error(e.message);
+       await this.mensajesPresenter.refresh();
     }
   }
 
   async refresh() {
     await super.refresh();
+    await this.mensajesPresenter.refresh();
     this.ingresoButton.onclick = event => this.ingresoClick(event);
   }
 }

@@ -6,6 +6,7 @@ import { InvitadoVerLibroPresenter } from "./components/invitado-ver-libro/invit
 import { InvitadoRegistroPresenter } from "./components/invitado-registro/invitado-registro-presenter.mjs"; 
 import { InvitadoIngresoPresenter } from "./components/invitado-ingreso/invitado-ingreso-presenter.mjs";
 import { ClienteHomePresenter } from "./components/cliente-home/cliente-home-presenter.mjs";
+import { ClienteVerLibroPresenter } from "./components/cliente-ver-libro/cliente-ver-libro-presenter.mjs";
 import { seed } from "./model/seeder.mjs";
 
 export function init() {
@@ -24,6 +25,7 @@ export function init() {
 
   //CLIENTE
   router.register(/^\/libreria\/cliente-home.html$/, new ClienteHomePresenter(model, 'cliente-home'));
+  router.register(/^\/libreria\/cliente-ver-libro.html/, new ClienteVerLibroPresenter(model, 'cliente-ver-libro'));
   // router.register(/^\/libreria\/agregar-libro.html$/, new AgregarLibroPresenter(model, 'agregar-libro'));
   router.handleLocation();
 }

@@ -1,9 +1,11 @@
 import { Presenter } from "../../commons/presenter.mjs";
 import { router } from "../../commons/router.mjs";
+import { MensajesPresenter } from "../mensajes/mensajes-presenter.mjs";
 
 export class InvitadoRegistroPresenter extends Presenter {
   constructor(model, view) {
     super(model, view);
+    this.mensajesPresenter = new MensajesPresenter(model, 'mensajes', '#mensajesContainer');
   }
 
 
@@ -87,16 +89,20 @@ export class InvitadoRegistroPresenter extends Presenter {
     try {
       console.log('Iniciando registro...', this.usuarioObject);
       await this.model.addUsuario(this.usuarioObject); //hay que cambiar registrar porque ese metodo no existe
+      this.mensajesPresenter.mensaje('Usuario agregado');
       console.log('Registro exitoso, navegando...');
       await router.navigate('/libreria/index.html');
     } catch (err) {
       console.error('Error en registro:', err);
+      this.mensajesPresenter.error(err.message);
+      await this.mensajesPresenter.refresh();
+
     }
   }
 
   async refresh() {
     await super.refresh();
-
+    await this.mensajesPresenter.refresh();
     // Buscar el botón dentro del parent element
     const button = this.parentElement?.querySelector('#registroBtn');
     

@@ -1,11 +1,13 @@
 import { libreriaSession } from "../../commons/libreria-session.mjs";
 import { Presenter } from "../../commons/presenter.mjs";
 import { router } from "../../commons/router.mjs";
-
+import { ClienteCatalogoLibroPresenter } from "../cliente-catalogo-libro/cliente-catalogo-libro-presenter.mjs";
+import { MensajesPresenter } from "../mensajes/mensajes-presenter.mjs";
 
 export class ClienteHomePresenter extends Presenter {
   constructor(model, view) {
     super(model, view);
+    this.mensajesPresenter = new MensajesPresenter(model, 'mensajes', '#mensajesContainer');
   }
 
   get catalogoElement() {
@@ -18,20 +20,22 @@ export class ClienteHomePresenter extends Presenter {
   async salirClick(event) {
     event.preventDefault();
     libreriaSession.salir();
+    this.mensajesPresenter.mensaje('Ha salido con éxito');
     router.navigate('/libreria/index.html');
   }
 
 
   async refresh() {
     await super.refresh();
+    await this.mensajesPresenter.refresh();
     this.salirLink.onclick = event => this.salirClick(event);
     let libros = this.model.getLibros();
 
     await Promise.all(
       libros.map(async (l) => {
-        return await new InvitadoCatalogoLibroPresenter(
+        return await new ClienteCatalogoLibroPresenter(
           l,
-          "invitado-catalogo-libro",
+          "cliente-catalogo-libro",
           "#catalogo"
         ).refresh();
       })
