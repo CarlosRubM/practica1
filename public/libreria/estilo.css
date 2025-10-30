@@ -445,3 +445,99 @@ div .factura-field {
 div .factura-field>input {
   flex-grow: 1;
 }
+
+/* Estilo para el contenedor principal (donde se añaden las tarjetas) */
+/* Asumiendo que this.parentElement tiene la clase "catalogo" */
+.catalogo {
+  display: flex;
+  flex-wrap: wrap; /* Para que pasen a la siguiente línea */
+  gap: 20px; /* Espacio entre tarjetas */
+  justify-content: center;
+}
+
+/* 1. La tarjeta completa */
+.libro-card {
+  width: 200px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column; /* Apila la portada encima de la info */
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+/* 2. Portada (caja gris) */
+.card-portada {
+  background-color: #D3D3D3; /* Gris claro */
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-portada img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover; /* Para que la imagen se ajuste bien */
+}
+
+/* Contenedor de la info */
+.card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 3. Título (caja marrón) */
+.card-titulo {
+  background-color: #8B4513; /* Marrón */
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  padding: 10px;
+  margin: 0;
+  min-height: 40px; /* Altura mínima para alinear */
+}
+
+/* 4. Autores (caja verde) */
+.card-autores {
+  background-color: #90EE90; /* Verde claro */
+  color: #333;
+  font-size: 0.9em;
+  padding: 10px;
+  margin: 0;
+  min-height: 60px; /* Altura mínima */
+}
+
+/* 5. Detalles (caja blanca) */
+.card-detalles {
+  background-color: #FFFFFF;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px; /* Espacio entre precio, isbn y link */
+}
+
+.card-precio {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+}
+
+.card-isbn {
+  font-size: 0.8em;
+  color: #666;
+}
+
+/* 6. Botón "Ver" */
+.card-ver-link {
+  background-color: #D2691E; /* Naranja/marrón */
+  color: white;
+  text-decoration: none;
+  padding: 5px 15px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.card-ver-link:hover {
+  background-color: #A0522D;
+}
