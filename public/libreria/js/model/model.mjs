@@ -262,6 +262,7 @@ class Cliente extends Usuario {
   }
   addCarroItem(item) {
     this.carro.addItem(item);
+    return item; //se ha añadido para poder visualizar los mensajes por consola para el log y ver que funciona correctamente
   }
   setCarroItemCantidad(index, cantidad) {
     this.getCarro().setItemCantidad(index, cantidad);

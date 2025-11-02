@@ -1,9 +1,13 @@
 import { Presenter } from "../../commons/presenter.mjs";
+import { libreriaSession } from "../../commons/libreria-session.mjs";
+import { MensajesPresenter } from "../mensajes/mensajes-presenter.mjs";
+import { router } from "../../commons/router.mjs";
 
 export class ClienteVerLibroPresenter extends Presenter {
 
   constructor(model, view) {
     super(model, view);
+    this.mensajesPresenter = new MensajesPresenter(model, 'mensajes', '#mensajesContainer');
   }
 
   get catalogoElement() {
@@ -22,7 +26,7 @@ export class ClienteVerLibroPresenter extends Presenter {
     return this.model.getLibroPorId(this.id);
   }
 
-  set libro(libro) {    
+  set libro(libro) {
     this.isbn = libro.isbn;
     this.titulo = libro.titulo;
     this.autores = libro.autores;
@@ -77,7 +81,29 @@ export class ClienteVerLibroPresenter extends Presenter {
     this.stockParagraph.textContent = stock;
   }
 
+//METODO PARA AGREGAR AL CARRITO
+  async agregarAlCarro(event) {
+    event.preventDefault();
+    try {
+      const clienteId = Number(libreriaSession.getUsuarioId());
+      const libroId = Number(this.id);
 
+      console.log('Agregar al carrito, clienteID:', clienteId, 'libroID:', libroId);
+
+      const itemAñadido = this.model.addClienteCarroItem(clienteId, {
+        libro: libroId,
+        cantidad: 1
+      });
+
+      console.log('Item añadido:', itemAñadido);
+
+      this.mensajesPresenter.mensaje('Libro agregado al carro');
+      await router.navigate('/libreria/cliente-carro.html');
+    } catch (err) {
+      console.error('Error al agregar al carro:', err);
+      this.mensajesPresenter.error(err.message);
+    }
+  }
 
   async refresh() {
     await super.refresh();
@@ -86,8 +112,16 @@ export class ClienteVerLibroPresenter extends Presenter {
     if (libro) this.libro = libro;
     else console.error(`Libro ${id} not found!`);
 
-    document.querySelector('#verLibroTitulo').textContent=`Titulo: ${libro.titulo}`
+    document.querySelector('#verLibroTitulo').textContent = `Titulo: ${libro.titulo}`
 
+    //Boton de agregar al carrito
+    const btnAgregarCarro = this.parentElement?.querySelector('#btnAgregarCarro');
+    if (btnAgregarCarro) {
+      console.log('Botón "Agregar al carrito" encontrado');
+      btnAgregarCarro.onclick = (e) => this.agregarAlCarro(e);
+    } else {
+      console.error('No se encontró el botón #btnAgregarCarro');
+    }
 
   }
 
