@@ -1,0 +1,134 @@
+import { Presenter } from "../../commons/presenter.mjs";
+import { router } from "../../commons/router.mjs";
+import { MensajesPresenter } from "../mensajes/mensajes-presenter.mjs";
+import { libreriaSession } from "../../commons/libreria-session.mjs";
+
+export class ClienteComprarCarroPresenter extends Presenter {
+  constructor(model, view) {
+    super(model, view);
+    this.mensajesPresenter = new MensajesPresenter(model, 'mensajes', '#mensajesContainer');
+    this.carro = null;
+  }
+
+  // ---- Getters de elementos del DOM ----
+  get template() { return document.querySelector('#tpl-compra-row'); }
+  get carroBody() { return document.querySelector('#carroBody'); }
+  get ivaCell() { return document.querySelector('#ivaCell'); }
+  get totalCell() { return document.querySelector('#totalCell'); }
+  get formCompra() { return document.querySelector('#formCompra'); }
+  get fechaInput() { return document.querySelector('#fecha'); }
+  get dniInput() { return document.querySelector('#dni'); }
+  get razonSocialInput() { return document.querySelector('#razonSocial'); }
+  get direccionInput() { return document.querySelector('#direccion'); }
+  get emailInput() { return document.querySelector('#email'); }
+
+  // ---- Accesores de valores ----
+  get facturaObject() {
+    return {
+      fecha: this.fechaInput?.value,
+      dni: this.dniInput?.value,
+      razonSocial: this.razonSocialInput?.value,
+      direccion: this.direccionInput?.value,
+      email: this.emailInput?.value,
+      cliente: Number(libreriaSession.getUsuarioId())
+    };
+  }
+
+  // ---- Utilidades ----
+  formatearPrecio(num) {
+    return (parseFloat(num) || 0).toFixed(2).replace('.', ',');
+  }
+
+  // ---- Pintado ----
+  // Crea una fila de la tabla del carro
+  pintarFila(item, index) {
+    const clone = this.template.content.cloneNode(true);
+    const tr = clone.querySelector('tr');
+    const input = tr.querySelector('.cantidadInput');
+
+    input.value = item.cantidad;
+
+    // Usar 'input' en lugar de 'change' para actualización en tiempo real
+    input.addEventListener('input', e => {
+      const cantidad = parseInt(e.target.value) || 0;
+      this.cambiarCantidad(index, cantidad);
+    });
+
+    tr.querySelector('.titulo').textContent = item.libro.titulo;
+    tr.querySelector('.isbn').textContent = `[${item.libro.isbn}]`;
+    tr.querySelector('.precioUnit').textContent = this.formatearPrecio(item.libro.precio);
+    tr.querySelector('.precioTotal').textContent = this.formatearPrecio(item.total);
+
+    return clone;
+  }
+
+  // Pinta el contenido completo del carro
+  pintarCarro() {
+    this.carroBody.innerHTML = '';
+
+    if (!this.carro?.items?.length) {
+      this.mensajesPresenter.error('El carro está vacío');
+      router.navigate('/libreria/cliente-carro.html');
+      return;
+    }
+
+    this.carro.items.forEach((it, i) => this.carroBody.append(this.pintarFila(it, i)));
+
+    this.ivaCell.textContent = this.formatearPrecio(this.carro.iva);
+    this.totalCell.textContent = this.formatearPrecio(this.carro.total);
+  }
+
+  // Cambia la cantidad de un item del carro
+  cambiarCantidad(index, cantidad) {
+    const id = Number(libreriaSession.getUsuarioId());
+    this.model.setClienteCarroItemCantidad(id, index, cantidad);
+    this.carro = this.model.getCarroCliente(id);
+    this.pintarCarro();
+  }
+
+
+  async procesarCompra(event) {
+    event.preventDefault();
+
+    try {
+      const facturaData = this.facturaObject;
+      this.model.facturarCompraCliente(facturaData);
+
+      this.mensajesPresenter.mensaje('Compra realizada con éxito');
+      await this.mensajesPresenter.refresh();
+      setTimeout(() => {
+        router.navigate('/libreria/cliente-home.html');
+      }, 1000);
+
+
+    } catch (err) {
+      console.error('Error al procesar la compra:', err);
+      this.mensajesPresenter.error('Error al procesar la compra: ' + err.message);
+      await this.mensajesPresenter.refresh();
+    }
+  }
+
+  // ---- Carga y refresco ----
+  async refresh() {
+    await super.refresh();
+    await this.mensajesPresenter.refresh();
+
+    const id = Number(libreriaSession.getUsuarioId());
+    this.carro = this.model.getCarroCliente(id);
+    this.pintarCarro();
+
+    const cliente = this.model.getClientePorId(id);
+    if (cliente) {
+      const hoy = new Date().toISOString().split('T')[0];
+      if (this.fechaInput) this.fechaInput.value = hoy;
+      if (this.dniInput) this.dniInput.value = cliente.dni || '';
+      if (this.razonSocialInput) this.razonSocialInput.value = cliente.razonSocial || '';
+      if (this.direccionInput) this.direccionInput.value = cliente.direccion || '';
+      if (this.emailInput) this.emailInput.value = cliente.email || '';
+    }
+
+    if (this.formCompra) {
+      this.formCompra.onsubmit = e => this.procesarCompra(e);
+    }
+  }
+}

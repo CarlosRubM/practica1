@@ -15,11 +15,15 @@ export class Libreria {
   usuarios = [];
   facturas = [];
   static lastId = 0;
+  static lastFacturaNumero = 0; //se añade este atributo para el numero de factura
 
   constructor() { }
 
   static genId() {
     return ++this.lastId;
+  }
+    static genNumeroFactura() {
+    return ++this.lastFacturaNumero; //se añade este metodo para el numero de factura
   }
 
   /**
@@ -170,6 +174,7 @@ export class Libreria {
    * Factura
    */
 
+  
   getFacturas() {
     return this.facturas;
   }
@@ -189,7 +194,7 @@ export class Libreria {
     let factura = new Factura();
     Object.assign(factura, obj)
     factura.assignId();
-    factura.assignNumero();
+    factura.genNumero();
     factura.cliente = new Cliente();
     Object.assign(factura.cliente, cliente);
     delete factura.cliente.carro;
@@ -256,6 +261,9 @@ class Cliente extends Usuario {
     this.carro = new Carro();
   }
 
+  removeItems() { //se añade este metodo para vaciar el carro tras la compra
+  this.carro.removeItems();
+  }
 
   getCarro() {
     return this.carro;
@@ -369,7 +377,7 @@ class Carro {
 
   removeItems() {
     this.items = [];
-    calcular();
+    this.calcular(); //hay que poner this porque es un metodo de la misma clase
   }
   calcular() {
     this.subtotal = this.items.reduce((total, i) => total + i.total, 0);

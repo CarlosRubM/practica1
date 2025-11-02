@@ -76,8 +76,6 @@ export class ClienteCarroPresenter extends Presenter {
         }
     }
 
-
-
     async refresh() {
         await super.refresh();
         await this.mensajesPresenter.refresh();
