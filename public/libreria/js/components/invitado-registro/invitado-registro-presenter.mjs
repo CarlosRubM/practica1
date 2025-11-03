@@ -88,7 +88,7 @@ export class InvitadoRegistroPresenter extends Presenter {
     event.preventDefault();
     try {
       console.log('Iniciando registro...', this.usuarioObject);
-      await this.model.addUsuario(this.usuarioObject); //hay que cambiar registrar porque ese metodo no existe
+      await this.model.addUsuario(this.usuarioObject); 
       this.mensajesPresenter.mensaje('Usuario agregado');
       console.log('Registro exitoso, navegando...');
       await router.navigate('/libreria/index.html');
