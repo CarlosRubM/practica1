@@ -34,10 +34,6 @@ export class ClienteComprarCarroPresenter extends Presenter {
     };
   }
 
-  // ---- Utilidades ----
-  formatearPrecio(num) {
-    return (parseFloat(num) || 0).toFixed(2).replace('.', ',');
-  }
 
   // ---- Pintado ----
   // Crea una fila de la tabla del carro
@@ -56,8 +52,8 @@ export class ClienteComprarCarroPresenter extends Presenter {
 
     tr.querySelector('.titulo').textContent = item.libro.titulo;
     tr.querySelector('.isbn').textContent = `[${item.libro.isbn}]`;
-    tr.querySelector('.precioUnit').textContent = this.formatearPrecio(item.libro.precio);
-    tr.querySelector('.precioTotal').textContent = this.formatearPrecio(item.total);
+    tr.querySelector('.precioUnit').textContent = libreriaSession.formatearMoneda(item.libro.precio);
+    tr.querySelector('.precioTotal').textContent = libreriaSession.formatearMoneda(item.total);
 
     return clone;
   }
@@ -74,8 +70,8 @@ export class ClienteComprarCarroPresenter extends Presenter {
 
     this.carro.items.forEach((it, i) => this.carroBody.append(this.pintarFila(it, i)));
 
-    this.ivaCell.textContent = this.formatearPrecio(this.carro.iva);
-    this.totalCell.textContent = this.formatearPrecio(this.carro.total);
+    this.ivaCell.textContent = libreriaSession.formatearMoneda(this.carro.iva);
+    this.totalCell.textContent = libreriaSession.formatearMoneda(this.carro.total);
   }
 
   // Cambia la cantidad de un item del carro

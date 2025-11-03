@@ -199,6 +199,7 @@ export class Libreria {
     Object.assign(factura.cliente, cliente);
     delete factura.cliente.carro;
     Object.assign(factura, cliente.carro);
+    this.facturas.push(factura); //se añade la factura al array de facturas (faltaba)
     cliente.removeItems();
   }
 

@@ -11,6 +11,9 @@ import { seed } from "./model/seeder.mjs";
 import { ClientePerfilPresenter } from "./components/cliente-perfil/cliente-perfil-presenter.mjs"; 
 import { ClienteCarroPresenter } from "./components/cliente-carro/cliente-carro-presenter.mjs";
 import { ClienteComprarCarroPresenter } from "./components/cliente-comprar-carro/cliente-comprar-carro-presenter.mjs";
+import { ClienteListaComprasPresenter } from "./components/cliente-lista-compras/cliente-lista-compras-presenter.mjs";
+import { ClienteVerCompraPresenter } from "./components/cliente-ver-compra/cliente-ver-compra-presenter.mjs";
+
 
 export function init() {
   seed();
@@ -32,6 +35,8 @@ export function init() {
   router.register(/^\/libreria\/cliente-perfil.html/, new ClientePerfilPresenter(model, 'cliente-perfil'));
   router.register(/^\/libreria\/cliente-carro.html/, new ClienteCarroPresenter(model, 'cliente-carro'));
   router.register(/^\/libreria\/cliente-comprar-carro.html/, new ClienteComprarCarroPresenter(model, 'cliente-comprar-carro'));
+  router.register(/^\/libreria\/cliente-lista-compras.html/, new ClienteListaComprasPresenter(model, 'cliente-lista-compras'));
+  router.register(/^\/libreria\/cliente-ver-compra.html/, new ClienteVerCompraPresenter(model, 'cliente-ver-compra'));
   // router.register(/^\/libreria\/agregar-libro.html$/, new AgregarLibroPresenter(model, 'agregar-libro'));
   router.handleLocation();
 }
