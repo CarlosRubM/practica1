@@ -93,13 +93,8 @@ export class ClienteComprarCarroPresenter extends Presenter {
     try {
       const facturaData = this.facturaObject;
       this.model.facturarCompraCliente(facturaData);
-
       this.mensajesPresenter.mensaje('Compra realizada con éxito');
-      await this.mensajesPresenter.refresh();
-      setTimeout(() => {
-        router.navigate('/libreria/cliente-home.html');
-      }, 1000);
-
+      await router.navigate('/libreria/cliente-home.html');
 
     } catch (err) {
       console.error('Error al procesar la compra:', err);
