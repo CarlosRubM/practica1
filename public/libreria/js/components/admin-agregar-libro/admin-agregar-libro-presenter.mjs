@@ -1,96 +1,127 @@
 import { libreriaSession } from "../../commons/libreria-session.mjs";
 import { Presenter } from "../../commons/presenter.mjs";
 import { router } from "../../commons/router.mjs";
+import { MensajesPresenter } from "../mensajes/mensajes-presenter.mjs";
 
 export class AdminAgregarLibroPresenter extends Presenter {
   constructor(model, view) {
     super(model, view);
+    this.mensajesPresenter = new MensajesPresenter(model, 'mensajes', '#mensajesContainer');
   }
 
-  // Accesores de elementos (IDs del HTML)
-  get formEl() { return document.querySelector("#agregarLibroForm"); }
-  get guardarBtn() { return document.querySelector("#guardarButton"); }
-  get cancelarBtn() { return document.querySelector("#cancelarButton"); }
-
-  get tituloInput() { return document.querySelector("#tituloInput"); }
-  get autoresInput() { return document.querySelector("#autoresInput"); }
-  get isbnInput() { return document.querySelector("#isbnInput"); }
-  get precioInput() { return document.querySelector("#precioInput"); }
-  get descripcionInput() { return document.querySelector("#descripcionInput"); }
-
-  // Construye el objeto libro desde el formulario
-  get libroFormData() {
-    const titulo = this.tituloInput.value.trim();
-    const autores = this.autoresInput.value.trim();
-    const isbn = this.isbnInput.value.trim();
-    const precio = parseFloat(this.precioInput.value);
-    const descripcion = this.descripcionInput.value.trim();
-   
-    return { titulo, autores, isbn, precio, descripcion };
+  // Botones
+  get guardarButton() {
+    return document.querySelector("#guardarButton");
   }
 
-  // Validación del formulario
-  validarLibro(libro) {
-    const errores = [];
-
-    if (!libro.titulo) errores.push("Título es obligatorio");
-    if (!libro.autores?.length) errores.push("Autores es obligatorio");
-    if (!libro.isbn) errores.push("ISBN es obligatorio");
-    if (!(typeof libro.precio === "number") || isNaN(libro.precio) || libro.precio < 0)
-      errores.push("Precio debe ser mayor o igual a 0");
-    if (!libro.descripcion) errores.push("Descripción es obligatoria");
-
-    return errores;
+  get cancelarButton() {
+    return document.querySelector("#cancelarButton");
   }
 
-  async onGuardar(event) {
+  // Inputs
+  get tituloInput() {
+    return document.querySelector("#tituloInput");
+  }
+
+  get tituloText() {
+    return this.tituloInput.value.trim();
+  }
+
+  get autoresInput() {
+    return document.querySelector("#autoresInput");
+  }
+
+  get autoresText() {
+    return this.autoresInput.value.trim();
+  }
+
+  get isbnInput() {
+    return document.querySelector("#isbnInput");
+  }
+
+  get isbnText() {
+    return this.isbnInput.value.trim();
+  }
+
+  get precioInput() {
+    return document.querySelector("#precioInput");
+  }
+
+  get precioText() {
+    return parseFloat(this.precioInput.value);
+  }
+
+  get descripcionInput() {
+    return document.querySelector("#descripcionInput");
+  }
+
+  get descripcionText() {
+    return this.descripcionInput.value.trim();
+  }
+
+  get stockInput() {
+    return document.querySelector("#stockInput");
+  }
+  
+  get stockText() {
+    return parseInt(this.stockInput.value);
+  }
+
+  // Objeto libro
+  get libroObject() {
+    return {
+      titulo: this.tituloText,
+      autores: this.autoresText,
+      isbn: this.isbnText,
+      precio: this.precioText,
+      resumen: this.descripcionText,
+      stock: this.stockText
+    };
+  }
+
+  async guardarClick(event) {
     event.preventDefault();
-
     try {
-    
+      console.log('Iniciando guardado...', this.libroObject);
+
       if (!libreriaSession.esAdmin()) {
         throw new Error("Acceso denegado");
       }
 
-      const libro = this.libroFormData;
-      const errores = this.validarLibro(libro);
-      if (errores.length > 0) {
-        libreriaSession.emitMessage?.({
-          text: errores.join(" "),
-          type: "error"
-        });
-        return;
-      }
+      const nuevo = await this.model.addLibro(this.libroObject);
+      this.mensajesPresenter.mensaje(`Libro "${nuevo.titulo}" agregado correctamente.`);
+      console.log('Libro guardado exitosamente, navegando...');
+      await router.navigate("/libreria/admin-home.html");
 
-      // Guardado en el modelo
-      const nuevo = await this.model.addLibro(libro);
-
-      // Mensaje y redirección
-      libreriaSession.emitMessage?.({
-        text: `Libro "${nuevo.titulo}" agregado correctamente.`,
-        type: "success"
-      });
-
-      // Redirige a listado o home admin (ajusta la ruta según la que tengas)
-      router.navigate("/libreria/admin-home.html");
-
-    } catch (error) {
-      libreriaSession.emitMessage?.({
-        text: `Error al guardar libro: ${error.message}`,
-        type: "error"
-      });
-      console.error(error);
+    } catch (err) {
+      console.error('Error al guardar libro:', err);
+      this.mensajesPresenter.error(err.message);
+      await this.mensajesPresenter.refresh();
     }
   }
 
-  async onCancelar() {
-    router.navigate("/libreria/admin-home.html");
+  async cancelarClick(event) {
+    event.preventDefault();
+    await router.navigate("/libreria/admin-home.html");
   }
 
   async refresh() {
     await super.refresh();
-    // Enlaza eventos tras render
-    this.formEl?.addEventListener("submit", this.onGuardar.bind(this));
-    this.cancelarBtn?.addEventListener("click", this.onCancelar.bind(this));
+    await this.mensajesPresenter.refresh();
+
+    const guardarBtn = this.parentElement?.querySelector('#guardarButton');
+    const cancelarBtn = this.parentElement?.querySelector('#cancelarButton');
+
+    if (guardarBtn) {
+      guardarBtn.onclick = event => this.guardarClick(event);
+    } else {
+      console.error('Botón guardar no encontrado');
+    }
+
+    if (cancelarBtn) {
+      cancelarBtn.onclick = event => this.cancelarClick(event);
+    } else {
+      console.error('Botón cancelar no encontrado');
+    }
   }
 }
