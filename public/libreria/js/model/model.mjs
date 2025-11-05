@@ -204,7 +204,8 @@ export class Libreria {
   }
 
   removeFactura(id) {
-    let factura = this.getFacturaPorId(id);
+    //let factura = this.getFacturaPorId(id);
+    let factura = this.facturas.find(f => f._id == id); //se cambia a find para que devuelva un objeto y no un array
     if (!factura) throw new Error('Factura no encontrada');
     this.facturas = this.facturas.filter(f => f._id != id);
     return factura;
@@ -364,6 +365,12 @@ class Carro {
     }
     this.calcular();
   }
+
+  //HAY QUE AGREGAR ESTE METODO QUE NO EXISTIA 
+  borrarItem(index) {
+    this.items = this.items.filter((v, i) => i != index);
+    this.calcular();
+}
 
   setItemCantidad(index, cantidad) {
     if (cantidad < 0) throw new Error('Cantidad inferior a 0')

@@ -4,15 +4,20 @@
   "main": "app.mjs",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ."
+    "start": "node .",
+    "test:web": "echo \"Abre http://localhost:3000/libreria/test/test.html\"",
+    "test:node": "mocha \"public/libreria/test-node/**/*.spec.mjs\" --timeout 999999 --reporter spec"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
-    "express": "^4.21.1",
+    "express": "^4.21.2",
     "path": "^0.12.7"
+  },
+  "description": "",
+  "devDependencies": {
+    "chai": "^6.2.0",
+    "mocha": "^11.7.4"
   }
 }
