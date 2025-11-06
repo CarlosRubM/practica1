@@ -10,7 +10,7 @@ export class ClienteComprarCarroPresenter extends Presenter {
     this.carro = null;
   }
 
-  // ---- Getters de elementos del DOM ----
+
   get template() { return document.querySelector('#tpl-compra-row'); }
   get carroBody() { return document.querySelector('#carroBody'); }
   get ivaCell() { return document.querySelector('#ivaCell'); }
@@ -22,7 +22,7 @@ export class ClienteComprarCarroPresenter extends Presenter {
   get direccionInput() { return document.querySelector('#direccion'); }
   get emailInput() { return document.querySelector('#email'); }
 
-  // ---- Accesores de valores ----
+
   get facturaObject() {
     return {
       fecha: this.fechaInput?.value,
@@ -34,9 +34,7 @@ export class ClienteComprarCarroPresenter extends Presenter {
     };
   }
 
-
-  // ---- Pintado ----
-  // Crea una fila de la tabla del carro
+  // Pinta una fila del carro
   pintarFila(item, index) {
     const clone = this.template.content.cloneNode(true);
     const tr = clone.querySelector('tr');
@@ -44,7 +42,7 @@ export class ClienteComprarCarroPresenter extends Presenter {
 
     input.value = item.cantidad;
 
-    // Usar 'input' en lugar de 'change' para actualización en tiempo real
+    // Para modificar la cantidad
     input.addEventListener('input', e => {
       const cantidad = parseInt(e.target.value) || 0;
       this.cambiarCantidad(index, cantidad);
@@ -99,7 +97,7 @@ export class ClienteComprarCarroPresenter extends Presenter {
     }
   }
 
-  // ---- Carga y refresco ----
+
   async refresh() {
     await super.refresh();
     await this.mensajesPresenter.refresh();

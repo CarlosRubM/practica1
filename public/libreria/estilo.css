@@ -1,4 +1,4 @@
-/* Colores profesionales
+/* Colores
 #2C3E50 - Azul oscuro principal
 #3498DB - Azul medio
 #5DADE2 - Azul claro
@@ -246,7 +246,20 @@ form>footer>input[type=submit]:hover,
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-form textarea,
+form textarea {
+  padding: 12px 16px;
+  margin: 8px 0 16px 0;
+  border-radius: 4px;
+  border: 2px solid #E0E0E0;
+  font-size: 1em;
+  width: 100%;
+  max-height: 120px;
+  min-height: 80px;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
 form input[type=password],
 form input[type=email],
 form input[type=text],
@@ -262,7 +275,11 @@ form input[type=date] {
   transition: border-color 0.3s ease;
 }
 
-form textarea:focus,
+form textarea:focus {
+  outline: none;
+  border-color: #3498DB;
+}
+
 form input[type=password]:focus,
 form input[type=email]:focus,
 form input[type=text]:focus,
@@ -472,13 +489,6 @@ div.mensajes {
   height: 100%;
 }
 
-.carro h2 {
-  text-align: center;
-  color: #2C3E50;
-  margin-bottom: 24px;
-  font-size: 2em;
-}
-
 .carro table {
   height: 100%;
   width: 100%;
@@ -512,29 +522,20 @@ div.mensajes {
   color: #2C3E50;
 }
 
-.carro .item-cantidad {
-  width: 150px;
-  min-width: 150px;
-}
-
-.carro tr,
-.item-detalle {
-  width: 100%;
-}
-
-.carro .item-detalle {
-  width: 35%;
-}
 
 .carro .item-cantidad {
-  width: 180px;
-  min-width: 180px;
-  padding: 12px 20px !important;
+  width: 120px; 
 }
 
 .carro .item-unidad,
 .carro .item-total {
-  width: 150px;
+  width: 110px;
+}
+
+
+.carro .item-detalle {
+  width: auto;
+  word-break: break-word; 
 }
 
 .carro tfoot th:first-child {
@@ -561,17 +562,19 @@ div.mensajes {
 
 .carro input[type=number] {
   padding: 12px 16px;
-  margin: 0 auto;
+  margin: 0;
   border-radius: 4px;
   border: 2px solid #E0E0E0;
-  width: 120px;
-  display: block;
+  width: 150px;
+  max-width: 100%;
   text-align: center;
-  font-size: 1.2em;
+  font-size: 1.3em;
   font-weight: 600;
   color: #2C3E50;
   background-color: white;
   box-sizing: border-box;
+  height: 50px;
+  line-height: normal;
 }
 
 .carro input[type=number]:focus {
@@ -606,6 +609,103 @@ div .factura-field>label {
   font-weight: 600;
   color: #2C3E50;
 }
+
+/**
+* Tabla de Facturas
+*/
+.facturas-table {
+  width: 100%;
+  padding: 4px;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  table-layout: fixed; 
+  margin-top: 20px; 
+}
+
+.facturas-table thead {
+  border-bottom: 2px solid #ECF0F1;
+  border-top: 2px solid #ECF0F1;
+  background-color: #F8F9FA;
+}
+
+.facturas-table th,
+.facturas-table td {
+  padding: 12px 8px;
+  vertical-align: middle;
+}
+
+.facturas-table th {
+  font-weight: 600;
+  color: #2C3E50;
+  text-align: left; /* Alinea los títulos a la izquierda */
+}
+
+/* Definimos los anchos de las columnas */
+.facturas-table .numero {
+  width: 130px;
+}
+
+.facturas-table .fecha {
+  width: auto; /* La fecha toma el espacio sobrante */
+}
+
+.facturas-table .total {
+  width: 120px;
+  text-align: center;
+}
+
+.facturas-table .accion {
+  width: 110px;
+  text-align: center;
+}
+
+
+.facturas-table .numero,
+.facturas-table .fecha,
+.facturas-table .total {
+    text-align: center;
+}
+
+
+.facturas-table .verBtn {
+  border: none;
+  padding: 0.6em 1.5em;
+  color: white;
+  background-color: #3498DB; 
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.facturas-table .verBtn:hover {
+  background-color: #2C3E50; 
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+
+.facturas-table tfoot {
+  border-top: 2px solid #2C3E50;
+  font-weight: 600;
+}
+
+.facturas-table tfoot .label {
+  text-align: right;
+  color: #2C3E50;
+  padding-right: 1em;
+}
+
+.facturas-table tfoot #totalCell {
+   text-align: center;
+   font-size: 1.1em;
+}
+
+
 
 /* Contenedor principal para las tarjetas */
 .catalogo {

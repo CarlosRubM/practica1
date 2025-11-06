@@ -1,61 +1,58 @@
 <header>
-  <h1>Tecnologías y Sistemas Web 25/26</h1>
-  <h2>Cliente Ver Compras</h2>
+  <h1>Tecnologías y Sistemas Web 25/26</h1>
+  <h2>Cliente Ver Compras</h2>
 </header>
 
 <article>
-  <nav class="navbar">
-    <ul>
-      <li><a id="homeLink" href="cliente-home.html">Inicio</a></li>
-      <li><a id="carroLink" href="cliente-carro.html" class="active">Carro</a></li>
-      <li><a id="facturasLink" href="cliente-lista-compras.html">Facturas</a></li>
-      <li><a id="perfilLink" href="cliente-perfil.html">Perfil</a></li>
-      <li><a id="salirLink" href="index.html">Salir</a></li>
-    </ul>
-  </nav>
+  <nav class="navbar">
+    <ul>
+      <li><a id="homeLink" href="cliente-home.html">Inicio</a></li>
+      <li><a id="carroLink" href="cliente-carro.html">Carro</a></li>
+      <li><a id="facturasLink" href="cliente-lista-compras.html" class="active">Facturas</a></li>
+      <li><a id="perfilLink" href="cliente-perfil.html">Perfil</a></li>
+      <li><a id="salirLink" href="index.html">Salir</a></li>
+    </ul>
+  </nav>
 
-  <div class="contenido">
-    <nav class="toolbar"></nav>
+  <div class="contenido">
+    <nav class="toolbar"></nav>
 
-    <div class="info">
-      <div class="mensajes-container" id="mensajesContainer"></div>
+    <div class="info">
+      <div class="mensajes-container" id="mensajesContainer"></div>
 
-            <!-- Sección de facturas -->
-        <section id="facturasSection" class="facturas">
-          <table id="facturasTabla" class="facturas-table">
-            <thead>
-              <tr>
-                <th style="width:120px">Numero</th>
-                <th style="width:150px">Fecha</th>
-                <th style="width:120px">Total</th>
-                <th style="width:100px"></th>
-              </tr>
-            </thead>
+                    <section id="facturasSection" class="facturas">
+          <table id="facturasTabla" class="facturas-table">
+            <thead>
+              <tr>
+                                <th class="numero">Numero</th>
+                <th class="fecha">Fecha</th>
+                <th class="total">Total</th>
+                <th class="accion"></th>
+              </tr>
+            </thead>
 
-            <tbody id="facturasBody">
-              <!-- Filas de facturas -->
-            </tbody>
+            <tbody id="facturasBody">
+                          </tbody>
 
-            <tfoot>
-              <tr>
-                <td colspan="2" class="label total">Total €</td>
-                <td id="totalCell">0,00</td>
-                <td></td>
-              </tr>
-            </tfoot>
-          </table>
-        </section>
+            <tfoot>
+              <tr>
+                <td colspan="2" class="label total">Total €</td>
+                <td id="totalCell">0,00</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </section>
 
-        <!-- Template para las filas de facturas -->
-        <template id="tpl-factura-row">
-          <tr class="factura-item">
-            <td class="numero"></td>
-            <td class="fecha"></td>
-            <td class="total">0,00</td>
-            <td>
-              <button class="verBtn">Ver</button>
-            </td>
-          </tr>
-        </template>
-  </div>
+                <template id="tpl-factura-row">
+          <tr class="factura-item">
+            <td class="numero"></td>
+            <td class="fecha"></td>
+            <td class="total">0,00</td>
+                        <td class="accion">
+              <button class="verBtn">Ver</button>
+            </td>
+          </tr>
+        </template>
+  </div>
 </article>
