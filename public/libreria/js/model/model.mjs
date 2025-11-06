@@ -180,11 +180,11 @@ export class Libreria {
   }
 
   getFacturaPorId(id) {
-    return this.facturas.filter((f) => f._id == id);
+    return this.facturas.find((f) => f._id == id); //esto devuelve un objeto no un array como lo hace filter
   }
 
   getFacturaPorNumero(numero) {
-    return this.facturas.filter((f) => f.numero == numero);
+    return this.facturas.find((f) => f.numero == numero); //aqui igual
   }
 
   facturarCompraCliente(obj) {
@@ -321,10 +321,10 @@ class Factura extends Identificable {
   }
 
   calcular() {
-    this.subtotal = this.items.reduce((total, i) => total + i.total, 0);
-    this.iva = this.total * 0.21;
-    this.total = this.subtotal * this.iva;
-  }
+  this.subtotal = this.items.reduce((total, i) => total + i.total, 0);
+  this.iva = this.subtotal * 0.21; //se arregla porque antes se llamaba a this.total que no tiene valor
+  this.total = this.subtotal + this.iva; // y aqui se multiplicaba por 0.21 en vez de sumarse
+}
 }
 
 class Item {

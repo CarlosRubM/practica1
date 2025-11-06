@@ -3,8 +3,8 @@ import { Libreria, ROL } from '../js/model/model.mjs';
 let assert = chai.assert;
 
 describe("GETTERS Y SETTERS", function () {
-    
-    beforeEach(function() {
+
+    beforeEach(function () {
         // Limpiar el modelo antes de cada test para que no haya problemas con las pruebas
         model.libros = [];
         model.usuarios = [];
@@ -100,12 +100,17 @@ describe("GETTERS Y SETTERS", function () {
         });
 
         it("getFacturaPorId() debe retornar factura correcta", function () {
+            // 1. Preparación
             let cliente = model.addCliente({ email: "test@test.com", password: "123", dni: "111" });
             let libro = model.addLibro({ isbn: "123", titulo: "Test", precio: 10, stock: 5 });
             cliente.addCarroItem({ libro: libro, cantidad: 1 });
             model.facturarCompraCliente({ cliente: cliente._id });
-            let facturas = model.getFacturaPorId(1);
-            assert.isArray(facturas);
+            // Sabemos que solo hay una, así que podemos tomar la primera del array.
+            let facturaCreada = model.getFacturas()[0];
+            // Ahora usamos el ID de esa factura para probar el método getFacturaPorId
+            let facturaEncontrada = model.getFacturaPorId(facturaCreada._id);
+            assert.isObject(facturaEncontrada);
+            assert.equal(facturaEncontrada._id, facturaCreada._id);
         });
 
         it("getFacturaPorNumero() debe retornar factura correcta", function () {
@@ -114,7 +119,9 @@ describe("GETTERS Y SETTERS", function () {
             cliente.addCarroItem({ libro: libro, cantidad: 1 });
             model.facturarCompraCliente({ cliente: cliente._id });
             let facturas = model.getFacturaPorNumero(1);
-            assert.isArray(facturas);
+            let factura = model.getFacturaPorNumero(1);
+            assert.isObject(factura);
+            assert.equal(factura.numero, 1);
         });
     });
 
@@ -135,9 +142,9 @@ describe("GETTERS Y SETTERS", function () {
     });
 });
 
-describe("=== EXCEPCIONES ===", function () {
-    
-    beforeEach(function() {
+describe("EXCEPCIONES", function () {
+
+    beforeEach(function () {
         model.libros = [];
         model.usuarios = [];
         model.facturas = [];
@@ -233,9 +240,9 @@ describe("=== EXCEPCIONES ===", function () {
     });
 });
 
-describe("=== AGREGAR, MODIFICAR Y ELIMINAR ===", function () {
-    
-    beforeEach(function() {
+describe("AGREGAR, MODIFICAR Y ELIMINAR", function () {
+
+    beforeEach(function () {
         model.libros = [];
         model.usuarios = [];
         model.facturas = [];
@@ -386,18 +393,18 @@ describe("=== AGREGAR, MODIFICAR Y ELIMINAR ===", function () {
 
     describe("CRUD de Facturas", function () {
         it("facturarCompraCliente() debe crear factura correctamente", function () {
-            let cliente = model.addCliente({ 
-                email: "test@test.com", 
-                password: "123", 
+            let cliente = model.addCliente({
+                email: "test@test.com",
+                password: "123",
                 dni: "111",
                 nombre: "Test",
                 apellidos: "Usuario"
             });
             let libro = model.addLibro({ isbn: "123", titulo: "Test", precio: 10, stock: 5 });
             cliente.addCarroItem({ libro: libro, cantidad: 2 });
-            
+
             model.facturarCompraCliente({ cliente: cliente._id });
-            
+
             assert.equal(model.getFacturas().length, 1);
             assert.equal(cliente.carro.items.length, 0);
         });
@@ -406,9 +413,9 @@ describe("=== AGREGAR, MODIFICAR Y ELIMINAR ===", function () {
             let cliente = model.addCliente({ email: "test@test.com", password: "123", dni: "111" });
             let libro = model.addLibro({ isbn: "123", titulo: "Test", precio: 10, stock: 5 });
             cliente.addCarroItem({ libro: libro, cantidad: 1 });
-            
+
             model.facturarCompraCliente({ cliente: cliente._id });
-            
+
             let factura = model.getFacturas()[0];
             assert.isNumber(factura.numero);
             assert.equal(factura.numero, 1);
@@ -419,18 +426,19 @@ describe("=== AGREGAR, MODIFICAR Y ELIMINAR ===", function () {
             let libro = model.addLibro({ isbn: "123", titulo: "Test", precio: 10, stock: 5 });
             cliente.addCarroItem({ libro: libro, cantidad: 1 });
             model.facturarCompraCliente({ cliente: cliente._id });
-            
+
             let factura = model.getFacturas()[0];
             model.removeFactura(factura._id);
-            
+
             assert.equal(model.getFacturas().length, 0);
         });
+        
     });
 });
 
-describe("=== CÁLCULOS ===", function () {
-    
-    beforeEach(function() {
+describe("CÁLCULOS", function () {
+
+    beforeEach(function () {
         model.libros = [];
         model.usuarios = [];
         model.facturas = [];
@@ -469,7 +477,7 @@ describe("=== CÁLCULOS ===", function () {
             let cliente = model.addCliente({ email: "test@test.com", password: "123", dni: "111" });
             let libro = model.addLibro({ isbn: "123", titulo: "Test", precio: 15.50, stock: 5 });
             cliente.addCarroItem({ libro: libro, cantidad: 3 });
-            
+
             let item = cliente.carro.items[0];
             assert.equal(item.total, 46.50); // 15.50 * 3
         });
@@ -478,11 +486,11 @@ describe("=== CÁLCULOS ===", function () {
             let cliente = model.addCliente({ email: "test@test.com", password: "123", dni: "111" });
             let libro = model.addLibro({ isbn: "123", titulo: "Test", precio: 20, stock: 5 });
             cliente.addCarroItem({ libro: libro, cantidad: 2 });
-            
+
             let item = cliente.carro.items[0];
             item.cantidad = 5;
             item.calcular();
-            
+
             assert.equal(item.total, 100); // 20 * 5
         });
     });
@@ -492,19 +500,19 @@ describe("=== CÁLCULOS ===", function () {
             let cliente = model.addCliente({ email: "test@test.com", password: "123", dni: "111" });
             let libro1 = model.addLibro({ isbn: "123", titulo: "Test 1", precio: 10, stock: 5 });
             let libro2 = model.addLibro({ isbn: "456", titulo: "Test 2", precio: 20, stock: 3 });
-            
+
             cliente.addCarroItem({ libro: libro1, cantidad: 2 }); // 20
             cliente.addCarroItem({ libro: libro2, cantidad: 3 }); // 60
-            
+
             assert.equal(cliente.carro.subtotal, 80);
         });
 
         it("Carro.calcular() debe calcular IVA correctamente (21%)", function () {
             let cliente = model.addCliente({ email: "test@test.com", password: "123", dni: "111" });
             let libro = model.addLibro({ isbn: "123", titulo: "Test", precio: 100, stock: 5 });
-            
+
             cliente.addCarroItem({ libro: libro, cantidad: 1 });
-            
+
             assert.equal(cliente.carro.subtotal, 100);
             assert.equal(cliente.carro.iva, 21); // 21% de 100
         });
@@ -512,9 +520,9 @@ describe("=== CÁLCULOS ===", function () {
         it("Carro.calcular() debe calcular total correctamente", function () {
             let cliente = model.addCliente({ email: "test@test.com", password: "123", dni: "111" });
             let libro = model.addLibro({ isbn: "123", titulo: "Test", precio: 100, stock: 5 });
-            
+
             cliente.addCarroItem({ libro: libro, cantidad: 1 });
-            
+
             assert.equal(cliente.carro.total, 121); // 100 + 21
         });
 
@@ -523,11 +531,11 @@ describe("=== CÁLCULOS ===", function () {
             let libro1 = model.addLibro({ isbn: "123", titulo: "Test 1", precio: 50, stock: 5 });
             let libro2 = model.addLibro({ isbn: "456", titulo: "Test 2", precio: 30, stock: 3 });
             let libro3 = model.addLibro({ isbn: "789", titulo: "Test 3", precio: 20, stock: 2 });
-            
+
             cliente.addCarroItem({ libro: libro1, cantidad: 2 }); // 100
             cliente.addCarroItem({ libro: libro2, cantidad: 1 }); // 30
             cliente.addCarroItem({ libro: libro3, cantidad: 3 }); // 60
-            
+
             // Subtotal: 190
             // IVA: 39.9 (21% de 190)
             // Total: 229.9
@@ -539,10 +547,10 @@ describe("=== CÁLCULOS ===", function () {
         it("Carro.calcular() debe recalcular al modificar cantidad", function () {
             let cliente = model.addCliente({ email: "test@test.com", password: "123", dni: "111" });
             let libro = model.addLibro({ isbn: "123", titulo: "Test", precio: 10, stock: 5 });
-            
+
             cliente.addCarroItem({ libro: libro, cantidad: 2 }); // 20
             assert.equal(cliente.carro.total, 24.2); // 20 + 4.2
-            
+
             cliente.setCarroItemCantidad(0, 5); // cambiar a 5 unidades
             assert.equal(cliente.carro.subtotal, 50);
             assert.equal(cliente.carro.iva, 10.5);
@@ -551,7 +559,7 @@ describe("=== CÁLCULOS ===", function () {
 
         it("Carro.calcular() debe ser 0 cuando está vacío", function () {
             let cliente = model.addCliente({ email: "test@test.com", password: "123", dni: "111" });
-            
+
             assert.equal(cliente.carro.subtotal, 0);
             assert.equal(cliente.carro.iva, 0);
             assert.equal(cliente.carro.total, 0);
@@ -561,14 +569,14 @@ describe("=== CÁLCULOS ===", function () {
             let cliente = model.addCliente({ email: "test@test.com", password: "123", dni: "111" });
             let libro1 = model.addLibro({ isbn: "123", titulo: "Test 1", precio: 10, stock: 5 });
             let libro2 = model.addLibro({ isbn: "456", titulo: "Test 2", precio: 20, stock: 3 });
-            
+
             cliente.addCarroItem({ libro: libro1, cantidad: 2 });
             cliente.addCarroItem({ libro: libro2, cantidad: 1 });
-            
+
             assert.equal(cliente.carro.subtotal, 40); // 20 + 20
-            
+
             cliente.borrarCarroItem(0);
-            
+
             assert.equal(cliente.carro.subtotal, 20);
             assert.equal(cliente.carro.iva, 4.2);
             assert.equal(cliente.carro.total, 24.2);
@@ -577,30 +585,55 @@ describe("=== CÁLCULOS ===", function () {
 
     describe("Cálculos de Factura", function () {
         it("Factura debe tener los cálculos del carro", function () {
-            let cliente = model.addCliente({ 
-                email: "test@test.com", 
-                password: "123", 
+            let cliente = model.addCliente({
+                email: "test@test.com",
+                password: "123",
                 dni: "111",
                 nombre: "Test"
             });
             let libro = model.addLibro({ isbn: "123", titulo: "Test", precio: 100, stock: 5 });
-            
+
             cliente.addCarroItem({ libro: libro, cantidad: 2 });
             model.facturarCompraCliente({ cliente: cliente._id });
-            
+
             let factura = model.getFacturas()[0];
             assert.equal(factura.items.length, 1);
             assert.equal(factura.items[0].cantidad, 2);
         });
+        it("Factura.calcular() debe recalcular totales correctamente al añadir un item", function () {
+
+            let cliente = model.addCliente({ email: "test@test.com", password: "123", dni: "111" });
+            let libro1 = model.addLibro({ isbn: "123", titulo: "Test 1", precio: 100, stock: 5 });
+            cliente.addCarroItem({ libro: libro1, cantidad: 1 }); // Carro: total 121
+            model.facturarCompraCliente({ cliente: cliente._id });
+
+            let factura = model.getFacturaPorNumero(1);
+            assert.equal(factura.total, 121, "El total inicial copiado del carro es 121");
+
+            // 2. Acción (Añadimos un item nuevo a la factura YA CREADA)
+            let libro2 = model.addLibro({ isbn: "456", titulo: "Test 2", precio: 50, stock: 10 });
+
+            let itemObj = {
+                libro: libro2,
+                cantidad: 2,
+                total: 100 // 50 (precio) * 2 (cantidad)
+            };
+            factura.addItem(itemObj);
+
+            assert.equal(factura.subtotal, 200, "El subtotal debe ser 200");
+            assert.equal(factura.iva, 42, "El IVA debe ser 42");
+            assert.equal(factura.total, 242, "El total debe ser 242");
+        });
+
     });
 
     describe("Casos de cálculo complejos", function () {
         it("Debe calcular correctamente con decimales", function () {
             let cliente = model.addCliente({ email: "test@test.com", password: "123", dni: "111" });
             let libro = model.addLibro({ isbn: "123", titulo: "Test", precio: 19.99, stock: 5 });
-            
+
             cliente.addCarroItem({ libro: libro, cantidad: 3 });
-            
+
             // 19.99 * 3 = 59.97
             // IVA: 59.97 * 0.21 = 12.5937
             // Total: 59.97 + 12.5937 = 72.5637
@@ -612,10 +645,10 @@ describe("=== CÁLCULOS ===", function () {
         it("Debe recalcular correctamente después de vaciar carro", function () {
             let cliente = model.addCliente({ email: "test@test.com", password: "123", dni: "111" });
             let libro = model.addLibro({ isbn: "123", titulo: "Test", precio: 50, stock: 5 });
-            
+
             cliente.addCarroItem({ libro: libro, cantidad: 2 });
             assert.equal(cliente.carro.total, 121); // 100 + 21
-            
+
             cliente.removeItems();
             assert.equal(cliente.carro.subtotal, 0);
             assert.equal(cliente.carro.iva, 0);
