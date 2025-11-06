@@ -217,7 +217,8 @@ form header h2 {
   margin: 0;
 }
 
-form footer {
+form footer,
+.form-actions{
   display: flex;
   justify-content: flex-end;
   margin-top: 24px;
@@ -703,6 +704,26 @@ div .factura-field>label {
 .facturas-table tfoot #totalCell {
    text-align: center;
    font-size: 1.1em;
+}
+
+
+/**
+* Factura - Campos de solo lectura
+*/
+
+.factura input[type=text][readonly] {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 8px 0 16px 0;
+  font-weight: 600;
+  color: #2C3E50;
+  cursor: default;
+}
+
+.factura input[type=text][readonly]:focus {
+  outline: none;
+  border: none;
 }
 
 

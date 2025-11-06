@@ -79,7 +79,7 @@ export class ClientePerfilPresenter extends Presenter {
             direccion: this.direccionText
         };
     }
-
+//se usan mensajes de consola para ver que va saliendo bien
     async guardarClick(event) {
         event.preventDefault();
         try {

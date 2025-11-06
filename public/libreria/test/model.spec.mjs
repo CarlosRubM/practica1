@@ -2,10 +2,10 @@ import * as chai from 'https://cdnjs.cloudflare.com/ajax/libs/chai/5.1.1/chai.js
 import { Libreria, ROL } from '../js/model/model.mjs';
 let assert = chai.assert;
 
-describe("=== GETTERS Y SETTERS", function () {
+describe("GETTERS Y SETTERS", function () {
     
     beforeEach(function() {
-        // Limpiar el modelo antes de cada test
+        // Limpiar el modelo antes de cada test para que no haya problemas con las pruebas
         model.libros = [];
         model.usuarios = [];
         model.facturas = [];

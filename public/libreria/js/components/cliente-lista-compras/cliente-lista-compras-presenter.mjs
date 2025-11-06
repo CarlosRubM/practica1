@@ -14,7 +14,7 @@ export class ClienteListaComprasPresenter extends Presenter {
   get totalCell() { return document.querySelector('#totalCell'); }
   get template() { return document.querySelector('#tpl-factura-row'); }
 
-
+//UNICAMENTE PARA QUE SALGA DE IGUAL MANERA QUE EN LOS VIDEOS
   formatearFecha(fecha) {
     if (!fecha) return '';
     const f = new Date(fecha);

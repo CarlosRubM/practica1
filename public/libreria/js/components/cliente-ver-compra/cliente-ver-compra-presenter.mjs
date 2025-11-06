@@ -31,43 +31,44 @@ export class ClienteVerCompraPresenter extends Presenter {
     return `${year}-${month}-${day}`;
   }
 
- pintarItem(item) {
-    const clone = this.template.content.cloneNode(true);
-    const tr = clone.querySelector('tr');
-
-    tr.querySelector('.cantidad').textContent = item.cantidad;
-    tr.querySelector('.titulo').textContent = item.libro.titulo;
-    tr.querySelector('.isbn').textContent = `[${item.libro.isbn}]`;
-    tr.querySelector('.precioUnit').textContent = libreriaSession.formatearMoneda(item.libro.precio);
-    tr.querySelector('.precioTotal').textContent = libreriaSession.formatearMoneda(item.total);
-
-    return clone;
+pintarFactura() {
+  if (!this.factura) {
+    this.mensajesPresenter.error('Factura no encontrada');
+    router.navigate('/libreria/cliente-lista-compras.html');
+    return;
   }
 
-  pintarFactura() {
-    if (!this.factura) {
-      this.mensajesPresenter.error('Factura no encontrada');
-      router.navigate('/libreria/cliente-lista-compras.html');
-      return;
-    }
+  // Usar .value en lugar de .textContent para los inputs
+  this.numeroFactura.value = this.factura.numero || '';
+  this.fechaFactura.value = this.formatearFecha(this.factura.fecha);
+  this.razonSocial.value = this.factura.razonSocial || '';
+  this.dniFactura.value = this.factura.dni || '';
+  this.direccionFactura.value = this.factura.direccion || '';
+  this.emailFactura.value = this.factura.email || '';
 
-    this.numeroFactura.textContent = this.factura.numero || '';
-    this.fechaFactura.textContent = this.formatearFecha(this.factura.fecha);
-    this.razonSocial.textContent = this.factura.razonSocial || '';
-    this.dniFactura.textContent = this.factura.dni || '';
-    this.direccionFactura.textContent = this.factura.direccion || '';
-    this.emailFactura.textContent = this.factura.email || '';
-
-    this.itemsBody.innerHTML = '';
-    if (this.factura.items?.length) {
-      this.factura.items.forEach(item => this.itemsBody.append(this.pintarItem(item)));
-    }
-
-    this.ivaCell.textContent = libreriaSession.formatearMoneda(this.factura.iva);
-    this.totalCell.textContent = libreriaSession.formatearMoneda(this.factura.total);
+  this.itemsBody.innerHTML = '';
+  if (this.factura.items?.length) {
+    this.factura.items.forEach(item => this.itemsBody.append(this.pintarItem(item)));
   }
 
- /*  getFacturaIdFromUrl() {
+  this.ivaCell.textContent = libreriaSession.formatearMoneda(this.factura.iva);
+  this.totalCell.textContent = libreriaSession.formatearMoneda(this.factura.total);
+}
+
+pintarItem(item) {
+  const clone = this.template.content.cloneNode(true);
+  const tr = clone.querySelector('tr');
+
+  tr.querySelector('.item-cantidad').textContent = item.cantidad;
+  tr.querySelector('.titulo').textContent = item.libro.titulo;
+  tr.querySelector('.isbn').textContent = `[${item.libro.isbn}]`;
+  tr.querySelector('.item-unidad').textContent = libreriaSession.formatearMoneda(item.libro.precio);
+  tr.querySelector('.item-total').textContent = libreriaSession.formatearMoneda(item.total);
+
+  return clone;
+}
+ /*  se podria hacer asi pero hemos optado por usar libreriaSession
+  getFacturaIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
     return Number(params.get('id'));
   } */
