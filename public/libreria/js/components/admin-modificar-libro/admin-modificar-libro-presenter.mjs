@@ -118,8 +118,6 @@ export class AdminModificarLibroPresenter extends Presenter {
         await super.refresh(); // Ya carga los datos
         await this.mensajesPresenter.refresh();
 
-        // Obtenemos el ID del libro desde la URL o desde algún parámetro
-        // Asumiendo que el ID viene como parámetro en la URL (ej: ?id=1)
         const urlParams = new URLSearchParams(window.location.search);
         const id = Number(urlParams.get('id'));
         
@@ -136,7 +134,7 @@ export class AdminModificarLibroPresenter extends Presenter {
 
         // Prerellenamos el formulario con los datos actuales
         console.log('Libro obtenido en refresh:', this.libro);
-        this.pintar(this.libro); // Sin esto el formulario estaría vacío
+        this.pintar(this.libro); 
 
         const button = this.parentElement?.querySelector('#guardarButton');
         if (button) {

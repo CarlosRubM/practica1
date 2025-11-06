@@ -121,8 +121,8 @@ export class AdminPerfilPresenter extends Presenter {
         console.log('Usuarios en el modelo:', this.model.usuarios);
         this.usuario = this.model.getUsuarioPorId(id);
         //Prerellenamos el formulario con los datos actuales
-        console.log('Usuario obtenido en refresh:', this.usuario); // <-- aquí
-        this.pintar(this.usuario); //sin esto el formulario estaria vacio
+        console.log('Usuario obtenido en refresh:', this.usuario);
+        this.pintar(this.usuario); 
 
         const button = this.parentElement?.querySelector('#guardarBtn');
         if (button) {

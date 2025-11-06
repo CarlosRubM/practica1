@@ -14,7 +14,7 @@ export class AdminCatalogoLibroPresenter extends Presenter {
   node.setAttribute('id', `titulo_${this.model._id}`);
   node.innerHTML = this.model.titulo;
 
-  // --- Portada (¡Descomentada y corregida!) ---
+  // --- Portada ---
   node = this.parentElement.querySelector(`#portada`);
   node.setAttribute('id', `portada_${this.model._id}`);
   node.innerHTML = this.model.portada;
@@ -27,8 +27,7 @@ export class AdminCatalogoLibroPresenter extends Presenter {
   //Precio 
   node = this.parentElement.querySelector(`#precio`);
   node.setAttribute('id', `precio_${this.model._id}`);
-  // Formateamos el precio como en la imagen
-  node.innerHTML = `€ ${this.model.precio}`; 
+  node.innerHTML = `€ ${this.model.precio}`; //Para formatear el precio con el símbolo de euro
 
   // ISBN 
   node = this.parentElement.querySelector(`#isbn`);

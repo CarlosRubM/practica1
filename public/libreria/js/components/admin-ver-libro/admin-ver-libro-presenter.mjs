@@ -131,7 +131,7 @@ export class AdminVerLibroPresenter extends Presenter {
       
       btnModificarLibro.onclick = (e) => this.modificarLibro(e);
     } else {
-      console.error('No se encontró el botón #btnBorrar');
+      console.error('No se encontró el botón #btnModificar');
     }
 
   }
