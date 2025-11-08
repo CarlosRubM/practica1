@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node .",
+    "test-rest": ".\\node_modules\\.bin\\mocha .\\test\\rest.spec.mjs --reporter spec --exit",
     "test:web": "echo \"Abre http://localhost:3000/libreria/test/test.html\"",
     "test:node": "mocha \"public/libreria/test-node/**/*.spec.mjs\" --timeout 999999 --reporter spec"
   },
@@ -18,6 +19,7 @@
   "description": "",
   "devDependencies": {
     "chai": "^6.2.0",
-    "mocha": "^11.7.4"
+    "chai-http": "^5.1.2",
+    "mocha": "^11.7.5"
   }
 }
