@@ -4,7 +4,7 @@ import url from 'url';
 
 import { model } from './model/model.mjs';
 import { seed } from './model/seeder.mjs';
-// seed();
+//seed();
 
 const STATIC_DIR = url.fileURLToPath(new URL('.', import.meta.url));
 const PORT = 3000;
@@ -22,23 +22,22 @@ app.use(express.urlencoded({ extended: true }));
 // RUTAS PARA LIBROS
 // ============================================
 
-// GET /api/libros - Obtener todos los libros
+// GET /api/libros - Obtener todos los libros o buscar por isbn/titulo
 app.get('/api/libros', function (req, res, next) {
-  res.json(model.getLibros());
-});
-
-// GET /api/libros?isbn=... - Obtener libro por ISBN
-app.get('/api/libros', function (req, res, next) {
-  let libro = model.getLibroPorIsbn(req.query.isbn);
-  if (!libro) res.status(404).json({ error: 'Libro no encontrado' });
-  else res.json(libro);
-});
-
-// GET /api/libros?titulo=... - Obtener libro por título
-app.get('/api/libros', function (req, res, next) {
-  let libro = model.getLibroPorTitulo(req.query.titulo);
-  if (!libro) res.status(404).json({ error: 'Libro no encontrado' });
-  else res.json(libro);
+  let isbn = req.query.isbn;
+  let titulo = req.query.titulo;
+  
+  if (isbn) {
+    let libro = model.getLibroPorIsbn(isbn);
+    if (!libro) res.status(404).json({ error: 'Libro no encontrado' });
+    else res.json(libro);
+  } else if (titulo) {
+    let libro = model.getLibroPorTitulo(titulo);
+    if (!libro) res.status(404).json({ error: 'Libro no encontrado' });
+    else res.json(libro);
+  } else {
+    res.json(model.getLibros());
+  }
 });
 
 // GET /api/libros/:id - Obtener libro por ID
@@ -407,7 +406,7 @@ app.delete('/api/facturas/:id', function (req, res, next) {
 // CONFIGURACIÓN PARA SPA
 // ============================================
 
-app.use('/libreria', (req, res) => {
+app.use('/libreria*', (req, res) => {
   res.sendFile(path.join(STATIC_DIR, 'public/libreria/index.html'));
 });
 
