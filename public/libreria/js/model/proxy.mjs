@@ -56,7 +56,7 @@ export class LibreriaProxy {
     }
   }
 
-  
+
   async getLibroPorIsbn(id) {
     let response = await fetch(`http://localhost:3000/api/libros?isbn=${isbn}`);
     if (response.ok) {
@@ -66,7 +66,7 @@ export class LibreriaProxy {
     }
   }
 
-  async getLibroPorTitulo(titulo){
+  async getLibroPorTitulo(titulo) {
     let response = await fetch(`http://localhost:3000/libros?titulo=${encodeURIComponent(titulo)}`)
     if (response.ok) {
       return await response.json();
@@ -86,7 +86,7 @@ export class LibreriaProxy {
   }
 
   async updateLibro(obj) {
-    let response = await fetch(`http://localhost:3000/api/libros/${obj._id}`, { 
+    let response = await fetch(`http://localhost:3000/api/libros/${obj._id}`, {
       method: 'PUT',
       body: JSON.stringify(obj),
       headers: { 'Content-Type': 'application/json;charset=utf-8' }
@@ -98,12 +98,12 @@ export class LibreriaProxy {
     }
   }
 
-    /**
-   * Clientes
-   */
+  /**
+ * Clientes
+ */
 
 
-  async addCliente(obj){
+  async addCliente(obj) {
     let response = await fetch('http://localhost:3000/api/clientes', {
       method: 'POST',
       body: JSON.stringify(obj),
@@ -114,9 +114,9 @@ export class LibreriaProxy {
     } else {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
-  } 
+  }
 
-  async getClientes(){
+  async getClientes() {
     let response = await fetch('http://localhost:3000/api/clientes');
     if (response.ok) {
       return await response.json();
@@ -133,7 +133,7 @@ export class LibreriaProxy {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
   }
-  async getClientePorEmail(email){
+  async getClientePorEmail(email) {
     let response = await fetch(`http://localhost:3000/clientes?email=${encodeURIComponent(email)}`)
     if (response.ok) {
       return await response.json();
@@ -142,7 +142,7 @@ export class LibreriaProxy {
     }
   }
 
-   async getClientePorDni(dni){
+  async getClientePorDni(dni) {
     let response = await fetch(`http://localhost:3000/clientes?dni=${encodeURIComponent(dni)}`)
     if (response.ok) {
       return await response.json();
@@ -174,7 +174,7 @@ export class LibreriaProxy {
   }
 
   async updateCliente(obj) {
-    let response = await fetch(`http://localhost:3000/api/clientes/${obj._id}`, { 
+    let response = await fetch(`http://localhost:3000/api/clientes/${obj._id}`, {
       method: 'PUT',
       body: JSON.stringify(obj),
       headers: { 'Content-Type': 'application/json;charset=utf-8' }
@@ -185,8 +185,33 @@ export class LibreriaProxy {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
   }
+  async autenticar(obj) {
+    let response = await fetch('/api/usuarios/autenticar', {
+      method: 'POST',
+      body: JSON.stringify(obj),
+      headers: { 'Content-Type': 'application/json;charset=utf-8' }
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  }
 
-  
+  //SE NECESITA PARA REGISTRAR USUARIOS
+  async addUsuario(obj) {
+    let response = await fetch('/api/usuarios', {
+      method: 'POST',
+      body: JSON.stringify(obj),
+      headers: { 'Content-Type': 'application/json;charset=utf-8' }
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  }
+
 
 
 }

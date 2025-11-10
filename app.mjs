@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/api/libros', function (req, res, next) {
   let isbn = req.query.isbn;
   let titulo = req.query.titulo;
-  
+
   if (isbn) {
     let libro = model.getLibroPorIsbn(isbn);
     if (!libro) res.status(404).json({ error: 'Libro no encontrado' });
@@ -154,6 +154,18 @@ app.post('/api/clientes/signin', function (req, res, next) {
   obj.rol = 'CLIENTE';
   let usuario = model.autenticar(obj);
   res.json(usuario);
+});
+
+app.post('/api/usuarios', function (req, res, next) {
+  console.log('/api/usuarios')
+  try {
+    let usuario = model.addUsuario(req.body);
+    console.log(usuario);
+    res.json(usuario);
+  } catch (err) {
+    console.error(err);
+    res.status(401).json({ message: err.message })
+  }
 });
 
 // PUT /api/clientes - Reemplazar todos los clientes
