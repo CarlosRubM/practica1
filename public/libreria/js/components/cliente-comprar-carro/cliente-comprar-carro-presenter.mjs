@@ -86,7 +86,7 @@ export class ClienteComprarCarroPresenter extends Presenter {
 
     try {
       const facturaData = this.facturaObject;
-      await his.model.facturarCompraCliente(facturaData);
+      await this.model.facturarCompraCliente(facturaData);
       this.mensajesPresenter.mensaje('Compra realizada con éxito');
       await router.navigate('/libreria/cliente-home.html');
 

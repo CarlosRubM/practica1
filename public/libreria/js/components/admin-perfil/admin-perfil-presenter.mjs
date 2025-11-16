@@ -120,6 +120,7 @@ export class AdminPerfilPresenter extends Presenter {
         console.log('ID obtenido de session:', id);
         console.log('Usuarios en el modelo:', this.model.usuarios);
         this.usuario = await this.model.getUsuarioPorId(id);
+
         //Prerellenamos el formulario con los datos actuales
         console.log('Usuario obtenido en refresh:', this.usuario);
         this.pintar(this.usuario); 

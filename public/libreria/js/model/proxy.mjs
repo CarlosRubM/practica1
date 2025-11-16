@@ -222,7 +222,7 @@ export class LibreriaProxy {
     }
   }
   async autenticar(obj) {
-    let response = await fetch('/api/usuarios/autenticar', {
+    let response = await fetch('http://localhost:3000/api/usuarios/autenticar', {
       method: 'POST',
       body: JSON.stringify(obj),
       headers: { 'Content-Type': 'application/json;charset=utf-8' }
@@ -400,6 +400,14 @@ export class LibreriaProxy {
     }
   }
 
+  async updateUsuario(obj) {
+    // Decidir según el rol a qué endpoint llamar
+    if (obj.rol === 'CLIENTE') {
+      return this.updateCliente(obj);
+    } else if (obj.rol === 'ADMIN') {
+      return this.updateAdmin(obj);
+    }
+  }
   /**
    * Facturas
    */
@@ -487,6 +495,8 @@ export class LibreriaProxy {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
   }
+
+ 
 }
 
 export const proxy = new LibreriaProxy();

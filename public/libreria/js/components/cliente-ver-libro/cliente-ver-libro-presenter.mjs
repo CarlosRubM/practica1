@@ -108,9 +108,9 @@ export class ClienteVerLibroPresenter extends Presenter {
   async refresh() {
     await super.refresh();
     console.log(this.id);
-    let libro = await this.model.getLibros(); 
+    let libro = await this.model.getLibroPorId(this.id); 
     if (libro) this.libro = libro;
-    else console.error(`Libro ${id} not found!`);
+    else console.error(`Libro ${this.id} not found!`);
 
     document.querySelector('#verLibroTitulo').textContent = `Titulo: ${libro.titulo}`
 
