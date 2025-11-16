@@ -4,7 +4,9 @@ import url from 'url';
 
 import { model } from './model/model.mjs';
 import { seed } from './model/seeder.mjs';
-seed(); //para que aparezcan los libros y usuarios iniciales
+
+
+//seed(); //para que aparezcan los libros y usuarios iniciales
 
 const STATIC_DIR = url.fileURLToPath(new URL('.', import.meta.url));
 const PORT = 3000;
@@ -14,9 +16,6 @@ app.use('/', express.static(path.join(STATIC_DIR, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ============================================
-// RUTAS PARA LIBROS
-// ============================================
 
 // ============================================
 // RUTAS PARA LIBROS
@@ -53,8 +52,12 @@ app.get('/api/libros/:id', function (req, res, next) {
 
 // POST /api/libros - Agregar un libro
 app.post('/api/libros', function (req, res, next) {
-  let libro = model.addLibro(req.body);
-  res.json(libro);
+  try {
+    let libro = model.addLibro(req.body);
+    res.json(libro);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 // PUT /api/libros - Reemplazar todos los libros
@@ -87,15 +90,15 @@ app.delete('/api/libros', function (req, res, next) {
 
 // DELETE /api/libros/:id - Eliminar un libro específico
 app.delete('/api/libros/:id', function (req, res, next) {
-  let id = req.params.id;
-  if (!id) res.status(400).json({ error: 'Id no definido' });
-  else {
-    let libro = model.getLibroPorId(id);
-    if (!libro) res.status(404).json({ error: 'Libro no encontrado' });
+  try {
+    let id = req.params.id;
+    if (!id) res.status(400).json({ error: 'Id no definido' });
     else {
       model.removeLibro(id);
       res.json({ ok: true });
     }
+  } catch (err) {
+    res.status(404).json({ error: err.message });
   }
 });
 
@@ -104,9 +107,6 @@ app.delete('/api/libros/:id', function (req, res, next) {
 // RUTAS PARA CLIENTES
 // ============================================
 
-// ============================================
-// RUTAS PARA CLIENTES
-// ============================================
 
 // GET /api/clientes - Obtener todos los clientes o buscar por email/dni
 app.get('/api/clientes', function (req, res, next) {
@@ -136,24 +136,36 @@ app.get('/api/clientes/:id', function (req, res, next) {
 
 // POST /api/clientes - Agregar un cliente (registro)
 app.post('/api/clientes', function (req, res, next) {
-  let cliente = model.addCliente(req.body);
-  res.json(cliente);
+  try {
+    let cliente = model.addCliente(req.body);
+    res.json(cliente);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 // POST /api/clientes/autenticar - Autenticar un cliente (login)
 app.post('/api/clientes/autenticar', function (req, res, next) {
-  let obj = req.body;
-  obj.rol = 'CLIENTE';
-  let usuario = model.autenticar(obj);
-  res.json(usuario);
+  try {
+    let obj = req.body;
+    obj.rol = 'CLIENTE';
+    let usuario = model.autenticar(obj);
+    res.json(usuario);
+  } catch (err) {
+    res.status(401).json({ error: err.message });
+  }
 });
 
 // POST /api/clientes/signin - Alias para autenticar (login)
 app.post('/api/clientes/signin', function (req, res, next) {
-  let obj = req.body;
-  obj.rol = 'CLIENTE';
-  let usuario = model.autenticar(obj);
-  res.json(usuario);
+  try {
+    let obj = req.body;
+    obj.rol = 'CLIENTE';
+    let usuario = model.autenticar(obj);
+    res.json(usuario);
+  } catch (err) {
+    res.status(401).json({ error: err.message });
+  }
 });
 
 app.post('/api/usuarios', function (req, res, next) {
@@ -164,7 +176,7 @@ app.post('/api/usuarios', function (req, res, next) {
     res.json(usuario);
   } catch (err) {
     console.error(err);
-    res.status(401).json({ message: err.message })
+    res.status(400).json({ error: err.message })
   }
 });
 
@@ -174,13 +186,22 @@ app.post('/api/usuarios/autenticar', function (req, res, next) {
     let usuario = model.autenticar(req.body);
     res.json(usuario);
   } catch (err) {
-    res.status(401).json({ message: err.message })
+    res.status(401).json({ error: err.message })
   }
 });
+
 // PUT /api/clientes - Reemplazar todos los clientes
 app.put('/api/clientes', function (req, res, next) {
   model.usuarios = model.usuarios.filter(u => u.rol !== 'CLIENTE');
-  req.body.forEach(c => model.addCliente(c));
+
+  const data = req.body;
+
+  if (Array.isArray(data)) {
+    data.forEach(c => model.addCliente(c));
+  } else {
+    model.addCliente(data); // es un cliente único
+  }
+
   res.json(model.getClientes());
 });
 
@@ -239,11 +260,15 @@ app.post('/api/clientes/:id/carro/items', function (req, res, next) {
 
 // PUT /api/clientes/:id/carro/items/:index - Actualizar cantidad de item del carro
 app.put('/api/clientes/:id/carro/items/:index', function (req, res, next) {
-  let id = req.params.id;
-  let index = req.params.index;
-  let cantidad = req.body.cantidad;
-  model.setClienteCarroItemCantidad(id, index, cantidad);
-  res.json(model.getCarroCliente(id));
+  try {
+    let id = req.params.id;
+    let index = req.params.index;
+    let cantidad = req.body.cantidad;
+    model.setClienteCarroItemCantidad(id, index, cantidad);
+    res.json(model.getCarroCliente(id));
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 // DELETE /api/clientes/:id/carro/items/:index - Eliminar un item del carro
@@ -262,10 +287,6 @@ app.delete('/api/clientes/:id/carro/items/:index', function (req, res, next) {
   }
 });
 
-
-// ============================================
-// RUTAS PARA ADMINISTRADORES
-// ============================================
 
 // ============================================
 // RUTAS PARA ADMINISTRADORES
@@ -305,24 +326,39 @@ app.post('/api/admins', function (req, res, next) {
 
 // POST /api/admins/autenticar - Autenticar un administrador (login)
 app.post('/api/admins/autenticar', function (req, res, next) {
-  let obj = req.body;
-  obj.rol = 'ADMIN';
-  let usuario = model.autenticar(obj);
-  res.json(usuario);
+  try {
+    let obj = req.body;
+    obj.rol = 'ADMIN';
+    let usuario = model.autenticar(obj);
+    res.json(usuario);
+  } catch (err) {
+    res.status(401).json({ error: err.message });
+  }
 });
 
 // POST /api/admins/signin - Alias para autenticar (login)
 app.post('/api/admins/signin', function (req, res, next) {
-  let obj = req.body;
-  obj.rol = 'ADMIN';
-  let usuario = model.autenticar(obj);
-  res.json(usuario);
+  try {
+    let obj = req.body;
+    obj.rol = 'ADMIN';
+    let usuario = model.autenticar(obj);
+    res.json(usuario);
+  } catch (err) {
+    res.status(401).json({ error: err.message });
+  }
 });
 
 // PUT /api/admins - Reemplazar todos los administradores
 app.put('/api/admins', function (req, res, next) {
   model.usuarios = model.usuarios.filter(u => u.rol !== 'ADMIN');
-  req.body.forEach(a => model.addAdmin(a));
+
+  const data = req.body;
+  if (Array.isArray(data)) {
+    data.forEach(a => model.addAdmin(a));
+  } else {
+    // Si viene un solo admin → lo añadimos directamente
+    model.addAdmin(data);
+  }
   res.json(model.getAdmins());
 });
 
@@ -361,9 +397,6 @@ app.delete('/api/admins/:id', function (req, res, next) {
   }
 });
 
-// ============================================
-// RUTAS PARA FACTURAS
-// ============================================
 
 // ============================================
 // RUTAS PARA FACTURAS
@@ -374,7 +407,7 @@ app.get('/api/facturas', function (req, res, next) {
   if (req.query.numero) {
     let factura = model.getFacturaPorNumero(req.query.numero);
     if (!factura) res.status(404).json({ error: 'Factura no encontrada' });
-    else res.json(factura);
+    else res.json(factura); // CORREGIDO: devuelve objeto, no array
   } else if (req.query.cliente) {
     let facturas = model.getFacturas().filter(f => f.cliente._id == req.query.cliente);
     res.json(facturas);
@@ -396,9 +429,13 @@ app.get('/api/facturas/:id', function (req, res, next) {
 
 // POST /api/facturas - Crear una factura (facturar compra del cliente)
 app.post('/api/facturas', function (req, res, next) {
-  model.facturarCompraCliente(req.body);
-  let facturas = model.getFacturas();
-  res.json(facturas[facturas.length - 1]);
+  try {
+    model.facturarCompraCliente(req.body);
+    let facturas = model.getFacturas();
+    res.json(facturas[facturas.length - 1]);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 // PUT /api/facturas - Reemplazar todas las facturas
@@ -415,11 +452,15 @@ app.delete('/api/facturas', function (req, res, next) {
 
 // DELETE /api/facturas/:id - Eliminar una factura específica
 app.delete('/api/facturas/:id', function (req, res, next) {
-  let id = req.params.id;
-  if (!id) res.status(400).json({ error: 'Id no definido' });
-  else {
-    model.removeFactura(id);
-    res.json({ ok: true });
+  try {
+    let id = req.params.id;
+    if (!id) res.status(400).json({ error: 'Id no definido' });
+    else {
+      model.removeFactura(id);
+      res.json({ ok: true });
+    }
+  } catch (err) {
+    res.status(404).json({ error: err.message });
   }
 });
 
