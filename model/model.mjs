@@ -141,6 +141,10 @@ export class Libreria {
     return this.usuarios.find(u => u.rol == ROL.ADMIN && u.email == email);
   }
 
+   getAdminPorId(id) {
+    return this.usuarios.find(u => u.rol == ROL.ADMIN && u._id == id);
+  }
+
   autenticar(obj) {
     let email = obj.email;
     let password = obj.password;

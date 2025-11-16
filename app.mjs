@@ -6,7 +6,7 @@ import { model } from './model/model.mjs';
 import { seed } from './model/seeder.mjs';
 
 
-//seed(); //para que aparezcan los libros y usuarios iniciales
+seed(); //para que aparezcan los libros y usuarios iniciales
 
 const STATIC_DIR = url.fileURLToPath(new URL('.', import.meta.url));
 const PORT = 3000;
