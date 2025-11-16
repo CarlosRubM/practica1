@@ -79,9 +79,9 @@ export class Libreria {
 
   addUsuario(obj) {
     if (obj.rol == ROL.CLIENTE)
-      this.addCliente(obj);
+     return this.addCliente(obj); //se añade return para que devuelva el cliente creado
     else if (obj.rol == ROL.ADMIN)
-      this.addAdmin(obj);
+      return this.addAdmin(obj);
     else throw new Error('Rol desconocido');
   }
 

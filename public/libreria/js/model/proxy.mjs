@@ -47,8 +47,8 @@ export class LibreriaProxy {
   }
 
   async removeLibros() {
-    let response = await fetch('http://localhost:3000/api/libros', { 
-      method: 'DELETE' 
+    let response = await fetch('http://localhost:3000/api/libros', {
+      method: 'DELETE'
     });
     if (response.ok) {
       return await response.json();
@@ -85,8 +85,8 @@ export class LibreriaProxy {
   }
 
   async removeLibro(id) {
-    let response = await fetch(`http://localhost:3000/api/libros/${id}`, { 
-      method: 'DELETE' 
+    let response = await fetch(`http://localhost:3000/api/libros/${id}`, {
+      method: 'DELETE'
     });
     if (response.ok) {
       return await response.json();
@@ -148,8 +148,8 @@ export class LibreriaProxy {
   }
 
   async removeClientes() {
-    let response = await fetch('http://localhost:3000/api/clientes', { 
-      method: 'DELETE' 
+    let response = await fetch('http://localhost:3000/api/clientes', {
+      method: 'DELETE'
     });
     if (response.ok) {
       return await response.json();
@@ -186,8 +186,8 @@ export class LibreriaProxy {
   }
 
   async removeCliente(id) {
-    let response = await fetch(`http://localhost:3000/api/clientes/${id}`, { 
-      method: 'DELETE' 
+    let response = await fetch(`http://localhost:3000/api/clientes/${id}`, {
+      method: 'DELETE'
     });
     if (response.ok) {
       return await response.json();
@@ -211,6 +211,18 @@ export class LibreriaProxy {
 
   async autenticarCliente(obj) {
     let response = await fetch('http://localhost:3000/api/clientes/autenticar', {
+      method: 'POST',
+      body: JSON.stringify(obj),
+      headers: { 'Content-Type': 'application/json;charset=utf-8' }
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  }
+  async autenticar(obj) {
+    let response = await fetch('/api/usuarios/autenticar', {
       method: 'POST',
       body: JSON.stringify(obj),
       headers: { 'Content-Type': 'application/json;charset=utf-8' }
@@ -314,8 +326,8 @@ export class LibreriaProxy {
   }
 
   async removeAdmins() {
-    let response = await fetch('http://localhost:3000/api/admins', { 
-      method: 'DELETE' 
+    let response = await fetch('http://localhost:3000/api/admins', {
+      method: 'DELETE'
     });
     if (response.ok) {
       return await response.json();
@@ -352,8 +364,8 @@ export class LibreriaProxy {
   }
 
   async removeAdmin(id) {
-    let response = await fetch(`http://localhost:3000/api/admins/${id}`, { 
-      method: 'DELETE' 
+    let response = await fetch(`http://localhost:3000/api/admins/${id}`, {
+      method: 'DELETE'
     });
     if (response.ok) {
       return await response.json();
@@ -415,8 +427,8 @@ export class LibreriaProxy {
   }
 
   async removeFacturas() {
-    let response = await fetch('http://localhost:3000/api/facturas', { 
-      method: 'DELETE' 
+    let response = await fetch('http://localhost:3000/api/facturas', {
+      method: 'DELETE'
     });
     if (response.ok) {
       return await response.json();
@@ -466,8 +478,8 @@ export class LibreriaProxy {
   }
 
   async removeFactura(id) {
-    let response = await fetch(`http://localhost:3000/api/facturas/${id}`, { 
-      method: 'DELETE' 
+    let response = await fetch(`http://localhost:3000/api/facturas/${id}`, {
+      method: 'DELETE'
     });
     if (response.ok) {
       return await response.json();

@@ -4,7 +4,7 @@ import url from 'url';
 
 import { model } from './model/model.mjs';
 import { seed } from './model/seeder.mjs';
-//seed();
+seed(); //para que aparezcan los libros y usuarios iniciales
 
 const STATIC_DIR = url.fileURLToPath(new URL('.', import.meta.url));
 const PORT = 3000;
@@ -168,6 +168,15 @@ app.post('/api/usuarios', function (req, res, next) {
   }
 });
 
+app.post('/api/usuarios/autenticar', function (req, res, next) {
+  console.log('/api/usuarios/autenticar')
+  try {
+    let usuario = model.autenticar(req.body);
+    res.json(usuario);
+  } catch (err) {
+    res.status(401).json({ message: err.message })
+  }
+});
 // PUT /api/clientes - Reemplazar todos los clientes
 app.put('/api/clientes', function (req, res, next) {
   model.usuarios = model.usuarios.filter(u => u.rol !== 'CLIENTE');
