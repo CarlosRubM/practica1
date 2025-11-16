@@ -75,8 +75,8 @@ export class ClienteListaComprasPresenter extends Presenter {
     await this.mensajesPresenter.refresh();
 
     const id = Number(libreriaSession.getUsuarioId());
-    this.facturas = this.model.getFacturas().filter(f => f.cliente?._id === id);
-
+    const todasFacturas = await this.model.getFacturas();
+    this.facturas = todasFacturas.filter(f => f.cliente?._id === id);
     this.pintarFacturas();
 
     //Cuando se le da al boton de ver para cada factura

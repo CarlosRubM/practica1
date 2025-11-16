@@ -88,7 +88,7 @@ export class ClientePerfilPresenter extends Presenter {
             console.log('Modificando perfil...', datosModificados);
 
             //Actualizamos el usuario con el metodo updateUsario de model
-            this.usuario = this.model.updateUsuario(datosModificados);
+            this.usuario = await this.model.updateUsuario(datosModificados);
 
             this.mensajesPresenter.mensaje('Usuario modificado correctamente');
             console.log('Cambio exitoso, navegando...');
@@ -117,7 +117,7 @@ export class ClientePerfilPresenter extends Presenter {
 
         //Obtenemos usuario actual
         const id = Number(libreriaSession.getUsuarioId());
-        this.usuario = this.model.getClientePorId(id);
+        this.usuario = await this.model.getClientePorId(id);
         //Prerellenamos el formulario con los datos actuales
         this.pintar(this.usuario); //sin esto el formulario estaria vacio
 

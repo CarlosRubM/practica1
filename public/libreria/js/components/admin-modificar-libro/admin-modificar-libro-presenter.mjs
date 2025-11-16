@@ -89,7 +89,7 @@ export class AdminModificarLibroPresenter extends Presenter {
             console.log('Modificando libro...', datosModificados);
 
             // Actualizamos el libro con el método updateLibro de model
-            this.libro = this.model.updateLibro(datosModificados);
+            this.libro = await this.model.updateLibro(datosModificados);
 
             this.mensajesPresenter.mensaje('Libro modificado correctamente');
             console.log('Cambio exitoso, navegando...');
@@ -124,7 +124,7 @@ export class AdminModificarLibroPresenter extends Presenter {
         console.log('ID obtenido de URL:', id);
         console.log('Libros en el modelo:', this.model.libros);
         
-        this.libro = this.model.getLibroPorId(id);
+        this.libro = await this.model.getLibroPorId(id);
         
         if (!this.libro) {
             this.mensajesPresenter.error('Libro no encontrado');

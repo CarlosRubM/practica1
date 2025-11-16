@@ -29,7 +29,7 @@ export class AdminHomePresenter extends Presenter {
     await super.refresh();
     await this.mensajesPresenter.refresh();
     this.salirLink.onclick = event => this.salirClick(event);
-    let libros = this.model.getLibros();
+    let libros = await this.model.getLibros();
 
     await Promise.all(
       libros.map(async (l) => {

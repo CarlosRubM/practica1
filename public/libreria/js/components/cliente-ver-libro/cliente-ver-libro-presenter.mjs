@@ -90,7 +90,7 @@ export class ClienteVerLibroPresenter extends Presenter {
 
       console.log('Agregar al carrito, clienteID:', clienteId, 'libroID:', libroId);
 
-      const itemAñadido = this.model.addClienteCarroItem(clienteId, {
+      const itemAñadido = await this.model.addClienteCarroItem(clienteId, {
         libro: libroId,
         cantidad: 1
       });
@@ -108,7 +108,7 @@ export class ClienteVerLibroPresenter extends Presenter {
   async refresh() {
     await super.refresh();
     console.log(this.id);
-    let libro = this.getLibro();
+    let libro = await this.model.getLibros(); 
     if (libro) this.libro = libro;
     else console.error(`Libro ${id} not found!`);
 

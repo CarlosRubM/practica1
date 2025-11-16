@@ -88,7 +88,7 @@ export class AdminPerfilPresenter extends Presenter {
             console.log('Modificando perfil...', datosModificados);
 
             //Actualizamos el usuario con el metodo updateUsario de model
-            this.usuario = this.model.updateUsuario(datosModificados);
+            this.usuario = await this.model.updateUsuario(datosModificados);
 
             this.mensajesPresenter.mensaje('Usuario modificado correctamente');
             console.log('Cambio exitoso, navegando...');
@@ -119,7 +119,7 @@ export class AdminPerfilPresenter extends Presenter {
         const id = Number(libreriaSession.getUsuarioId());
         console.log('ID obtenido de session:', id);
         console.log('Usuarios en el modelo:', this.model.usuarios);
-        this.usuario = this.model.getUsuarioPorId(id);
+        this.usuario = await this.model.getUsuarioPorId(id);
         //Prerellenamos el formulario con los datos actuales
         console.log('Usuario obtenido en refresh:', this.usuario);
         this.pintar(this.usuario); 

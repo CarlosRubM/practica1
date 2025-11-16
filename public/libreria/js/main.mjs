@@ -22,7 +22,7 @@ import { AdminModificarLibroPresenter } from "./components/admin-modificar-libro
 
 
 export function init() {
-  seed();
+  //seed();
   // console.log(model)
   router.register(/^\/libreria\/index.html$/, new InvitadoHomePresenter(proxy, 'invitado-home'));
   router.register(/^\/libreria\/catalogo.html$/, new InvitadoHomePresenter(proxy, 'invitado-home'));

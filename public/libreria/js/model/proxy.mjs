@@ -3,7 +3,6 @@ export const ROL = {
   CLIENTE: "CLIENTE",
 };
 
-
 export class LibreriaProxy {
 
   constructor() { }
@@ -47,6 +46,17 @@ export class LibreriaProxy {
     }
   }
 
+  async removeLibros() {
+    let response = await fetch('http://localhost:3000/api/libros', { 
+      method: 'DELETE' 
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  }
+
   async getLibroPorId(id) {
     let response = await fetch(`http://localhost:3000/api/libros/${id}`);
     if (response.ok) {
@@ -56,8 +66,7 @@ export class LibreriaProxy {
     }
   }
 
-
-  async getLibroPorIsbn(id) {
+  async getLibroPorIsbn(isbn) {
     let response = await fetch(`http://localhost:3000/api/libros?isbn=${isbn}`);
     if (response.ok) {
       return await response.json();
@@ -67,7 +76,7 @@ export class LibreriaProxy {
   }
 
   async getLibroPorTitulo(titulo) {
-    let response = await fetch(`http://localhost:3000/libros?titulo=${encodeURIComponent(titulo)}`)
+    let response = await fetch(`http://localhost:3000/api/libros?titulo=${encodeURIComponent(titulo)}`);
     if (response.ok) {
       return await response.json();
     } else {
@@ -75,9 +84,10 @@ export class LibreriaProxy {
     }
   }
 
-
   async removeLibro(id) {
-    let response = await fetch(`http://localhost:3000/api/libros/${id}`, { method: 'DELETE' });
+    let response = await fetch(`http://localhost:3000/api/libros/${id}`, { 
+      method: 'DELETE' 
+    });
     if (response.ok) {
       return await response.json();
     } else {
@@ -99,22 +109,8 @@ export class LibreriaProxy {
   }
 
   /**
- * Clientes
- */
-
-
-  async addCliente(obj) {
-    let response = await fetch('http://localhost:3000/api/clientes', {
-      method: 'POST',
-      body: JSON.stringify(obj),
-      headers: { 'Content-Type': 'application/json;charset=utf-8' }
-    });
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-  }
+   * Clientes
+   */
 
   async getClientes() {
     let response = await fetch('http://localhost:3000/api/clientes');
@@ -125,34 +121,12 @@ export class LibreriaProxy {
     }
   }
 
-  async getClientePorId(_id) {
-    let response = await fetch(`http://localhost:3000/api/usuarios/${_id}`);
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-  }
-  async getClientePorEmail(email) {
-    let response = await fetch(`http://localhost:3000/clientes?email=${encodeURIComponent(email)}`)
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-  }
-
-  async getClientePorDni(dni) {
-    let response = await fetch(`http://localhost:3000/clientes?dni=${encodeURIComponent(dni)}`)
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-  }
-
-  async removeCliente(id) {
-    let response = await fetch(`http://localhost:3000/api/clientes/${id}`, { method: 'DELETE' });
+  async addCliente(obj) {
+    let response = await fetch('http://localhost:3000/api/clientes', {
+      method: 'POST',
+      body: JSON.stringify(obj),
+      headers: { 'Content-Type': 'application/json;charset=utf-8' }
+    });
     if (response.ok) {
       return await response.json();
     } else {
@@ -173,6 +147,55 @@ export class LibreriaProxy {
     }
   }
 
+  async removeClientes() {
+    let response = await fetch('http://localhost:3000/api/clientes', { 
+      method: 'DELETE' 
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  }
+
+  async getClientePorId(_id) {
+    let response = await fetch(`http://localhost:3000/api/clientes/${_id}`);
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  }
+
+  async getClientePorEmail(email) {
+    let response = await fetch(`http://localhost:3000/api/clientes?email=${encodeURIComponent(email)}`);
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  }
+
+  async getClientePorDni(dni) {
+    let response = await fetch(`http://localhost:3000/api/clientes?dni=${encodeURIComponent(dni)}`);
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  }
+
+  async removeCliente(id) {
+    let response = await fetch(`http://localhost:3000/api/clientes/${id}`, { 
+      method: 'DELETE' 
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  }
+
   async updateCliente(obj) {
     let response = await fetch(`http://localhost:3000/api/clientes/${obj._id}`, {
       method: 'PUT',
@@ -185,22 +208,9 @@ export class LibreriaProxy {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
   }
-  async autenticar(obj) {
-    let response = await fetch('/api/usuarios/autenticar', {
-      method: 'POST',
-      body: JSON.stringify(obj),
-      headers: { 'Content-Type': 'application/json;charset=utf-8' }
-    });
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-  }
 
-  //SE NECESITA PARA REGISTRAR USUARIOS
-  async addUsuario(obj) {
-    let response = await fetch('/api/usuarios', {
+  async autenticarCliente(obj) {
+    let response = await fetch('http://localhost:3000/api/clientes/autenticar', {
       method: 'POST',
       body: JSON.stringify(obj),
       headers: { 'Content-Type': 'application/json;charset=utf-8' }
@@ -248,10 +258,28 @@ export class LibreriaProxy {
   }
 
   /**
- * Admins
- */
+   * Usuarios (registro genérico)
+   */
+
+  async addUsuario(obj) {
+    let response = await fetch('http://localhost:3000/api/usuarios', {
+      method: 'POST',
+      body: JSON.stringify(obj),
+      headers: { 'Content-Type': 'application/json;charset=utf-8' }
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  }
+
+  /**
+   * Administradores
+   */
+
   async getAdmins() {
-    let response = await fetch(`http://localhost:3000/api/admins`);
+    let response = await fetch('http://localhost:3000/api/admins');
     if (response.ok) {
       return await response.json();
     } else {
@@ -260,7 +288,7 @@ export class LibreriaProxy {
   }
 
   async addAdmin(obj) {
-    let response = await fetch(`http://localhost:3000/api/admins`, {
+    let response = await fetch('http://localhost:3000/api/admins', {
       method: 'POST',
       body: JSON.stringify(obj),
       headers: { 'Content-Type': 'application/json;charset=utf-8' }
@@ -273,10 +301,21 @@ export class LibreriaProxy {
   }
 
   async setAdmins(array) {
-    let response = await fetch(`http://localhost:3000/api/admins`, {
+    let response = await fetch('http://localhost:3000/api/admins', {
       method: 'PUT',
       body: JSON.stringify(array),
       headers: { 'Content-Type': 'application/json;charset=utf-8' }
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  }
+
+  async removeAdmins() {
+    let response = await fetch('http://localhost:3000/api/admins', { 
+      method: 'DELETE' 
     });
     if (response.ok) {
       return await response.json();
@@ -313,7 +352,9 @@ export class LibreriaProxy {
   }
 
   async removeAdmin(id) {
-    let response = await fetch(`http://localhost:3000/api/admins/${id}`, { method: 'DELETE' });
+    let response = await fetch(`http://localhost:3000/api/admins/${id}`, { 
+      method: 'DELETE' 
+    });
     if (response.ok) {
       return await response.json();
     } else {
@@ -334,9 +375,8 @@ export class LibreriaProxy {
     }
   }
 
-  // Autenticación de admin
-  async autenticar(obj) {
-    let response = await fetch('/api/admins/autenticar', {
+  async autenticarAdmin(obj) {
+    let response = await fetch('http://localhost:3000/api/admins/autenticar', {
       method: 'POST',
       body: JSON.stringify(obj),
       headers: { 'Content-Type': 'application/json;charset=utf-8' }
@@ -348,11 +388,11 @@ export class LibreriaProxy {
     }
   }
 
-  
   /**
- * Facturas
- */
- async getFacturas() {
+   * Facturas
+   */
+
+  async getFacturas() {
     let response = await fetch('http://localhost:3000/api/facturas');
     if (response.ok) {
       return await response.json();
@@ -361,7 +401,7 @@ export class LibreriaProxy {
     }
   }
 
-  async setFacturas(array){
+  async setFacturas(array) {
     let response = await fetch('http://localhost:3000/api/facturas', {
       method: 'PUT',
       body: JSON.stringify(array),
@@ -375,7 +415,9 @@ export class LibreriaProxy {
   }
 
   async removeFacturas() {
-    let response = await fetch('http://localhost:3000/api/facturas', { method: 'DELETE' });
+    let response = await fetch('http://localhost:3000/api/facturas', { 
+      method: 'DELETE' 
+    });
     if (response.ok) {
       return await response.json();
     } else {
@@ -383,7 +425,7 @@ export class LibreriaProxy {
     }
   }
 
-  async getFacturaPorId(id){
+  async getFacturaPorId(id) {
     let response = await fetch(`http://localhost:3000/api/facturas/${id}`);
     if (response.ok) {
       return await response.json();
@@ -392,7 +434,7 @@ export class LibreriaProxy {
     }
   }
 
-  async getFacturaPorNumero(numero){
+  async getFacturaPorNumero(numero) {
     let response = await fetch(`http://localhost:3000/api/facturas?numero=${encodeURIComponent(numero)}`);
     if (response.ok) {
       return await response.json();
@@ -401,7 +443,7 @@ export class LibreriaProxy {
     }
   }
 
-  async getFacturasPorCliente(clienteId){
+  async getFacturasPorCliente(clienteId) {
     let response = await fetch(`http://localhost:3000/api/facturas?cliente=${encodeURIComponent(clienteId)}`);
     if (response.ok) {
       return await response.json();
@@ -424,7 +466,9 @@ export class LibreriaProxy {
   }
 
   async removeFactura(id) {
-    let response = await fetch(`http://localhost:3000/api/facturas/${id}`, { method: 'DELETE' });
+    let response = await fetch(`http://localhost:3000/api/facturas/${id}`, { 
+      method: 'DELETE' 
+    });
     if (response.ok) {
       return await response.json();
     } else {

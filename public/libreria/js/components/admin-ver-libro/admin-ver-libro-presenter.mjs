@@ -87,7 +87,7 @@ export class AdminVerLibroPresenter extends Presenter {
     try {
       const libroId = Number(this.id);
 
-      this.model.removeLibro(libroId);
+      await this.model.removeLibro(libroId);
 
       this.mensajesPresenter.mensaje('Libro eliminado correctamente');
       await router.navigate('/libreria/admin-home.html');
@@ -111,7 +111,7 @@ export class AdminVerLibroPresenter extends Presenter {
   async refresh() {
     await super.refresh();
     console.log(this.id);
-    let libro = this.getLibro();
+    let libro = await this.model.getLibroPorId(this.id); //AQUI FALTA UN AWAIT
     if (libro) this.libro = libro;
     else console.error(`Libro ${id} not found!`);
 

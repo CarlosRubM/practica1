@@ -17,7 +17,7 @@ export class InvitadoHomePresenter extends Presenter {
   async refresh() {
     await super.refresh();
     await this.mensajesPresenter.refresh();
-    let libros = this.model.getLibros();
+    let libros = await this.model.getLibros();
 
     await Promise.all(
       libros.map(async (l) => {

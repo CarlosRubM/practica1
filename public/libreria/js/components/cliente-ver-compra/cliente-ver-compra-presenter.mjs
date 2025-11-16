@@ -78,7 +78,7 @@ pintarItem(item) {
     await this.mensajesPresenter.refresh();
     const facturaId = Number(libreriaSession.getFacturaId());
     //const facturaId = this.getFacturaIdFromUrl();
-    const todasFacturas = this.model.getFacturas();
+    const todasFacturas = await this.model.getFacturas();
     this.factura = todasFacturas.find(f => f._id === facturaId);
 
     this.pintarFactura();

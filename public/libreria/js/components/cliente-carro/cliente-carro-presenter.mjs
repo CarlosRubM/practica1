@@ -52,15 +52,15 @@ export class ClienteCarroPresenter extends Presenter {
 
             // Actualizar o eliminar según cantidad
             if (cantidad <= 0) {
-                this.model.setClienteCarroItemCantidad(id, index, 0);
+                await this.model.setClienteCarroItemCantidad(id, index, 0);
                 this.mensajesPresenter.mensaje('Libro eliminado del carrito');
             } else {
-                this.model.setClienteCarroItemCantidad(id, index, cantidad);
+                await this.model.setClienteCarroItemCantidad(id, index, cantidad);
                 this.mensajesPresenter.mensaje('Carrito modificado');
             }
 
             // Refrescar datos y vista
-            this.carro = this.model.getCarroCliente(id);
+            this.carro = await this.model.getCarroCliente(id);
             this.pintarCarro();
 
             // Aseguramos que el mensaje se actualiza visualmente
@@ -77,7 +77,7 @@ export class ClienteCarroPresenter extends Presenter {
         await super.refresh();
         await this.mensajesPresenter.refresh();
         const id = Number(libreriaSession.getUsuarioId());
-        this.carro = this.model.getCarroCliente(id);
+        this.carro = await this.model.getCarroCliente(id);
         this.pintarCarro();
 
         const btnComprar = document.querySelector('#compraLink');

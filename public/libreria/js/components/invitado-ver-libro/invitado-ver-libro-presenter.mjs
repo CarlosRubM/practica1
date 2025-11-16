@@ -82,7 +82,7 @@ export class InvitadoVerLibroPresenter extends Presenter {
   async refresh() {
     await super.refresh();
     console.log(this.id);
-    let libro = this.getLibro();
+    let libro = await this.model.getLibroPorId(this.id); 
     if (libro) this.libro = libro;
     else console.error(`Libro ${id} not found!`);
 

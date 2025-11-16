@@ -73,10 +73,10 @@ export class ClienteComprarCarroPresenter extends Presenter {
   }
 
   // Cambia la cantidad de un item del carro
-  cambiarCantidad(index, cantidad) {
+  async cambiarCantidad(index, cantidad) {
     const id = Number(libreriaSession.getUsuarioId());
-    this.model.setClienteCarroItemCantidad(id, index, cantidad);
-    this.carro = this.model.getCarroCliente(id);
+    await this.model.setClienteCarroItemCantidad(id, index, cantidad);
+    this.carro = await this.model.getCarroCliente(id);
     this.pintarCarro();
   }
 
@@ -86,7 +86,7 @@ export class ClienteComprarCarroPresenter extends Presenter {
 
     try {
       const facturaData = this.facturaObject;
-      this.model.facturarCompraCliente(facturaData);
+      await his.model.facturarCompraCliente(facturaData);
       this.mensajesPresenter.mensaje('Compra realizada con éxito');
       await router.navigate('/libreria/cliente-home.html');
 
@@ -103,10 +103,10 @@ export class ClienteComprarCarroPresenter extends Presenter {
     await this.mensajesPresenter.refresh();
 
     const id = Number(libreriaSession.getUsuarioId());
-    this.carro = this.model.getCarroCliente(id);
+    this.carro = await this.model.getCarroCliente(id);
     this.pintarCarro();
 
-    const cliente = this.model.getClientePorId(id);
+    const cliente = await this.model.getClientePorId(id);
     if (cliente) {
       const hoy = new Date().toISOString().split('T')[0];
       if (this.fechaInput) this.fechaInput.value = hoy;
