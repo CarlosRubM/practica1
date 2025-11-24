@@ -8,7 +8,7 @@ export class LibreriaProxy {
   constructor() { }
 
   /**
-   * Libros
+   Libros
    */
 
   async getLibros() {
@@ -109,7 +109,7 @@ export class LibreriaProxy {
   }
 
   /**
-   * Clientes
+   Clientes
    */
 
   async getClientes() {
@@ -209,6 +209,7 @@ export class LibreriaProxy {
     }
   }
 
+  /*
   async autenticarCliente(obj) {
     let response = await fetch('http://localhost:3000/api/clientes/autenticar', {
       method: 'POST',
@@ -221,12 +222,25 @@ export class LibreriaProxy {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
   }
+    */
+
   async autenticar(obj) {
-    let response = await fetch('http://localhost:3000/api/usuarios/autenticar', {
+    // Decidir la ruta según el rol
+    let ruta;
+    if (obj.rol === 'CLIENTE') {
+      ruta = 'http://localhost:3000/api/clientes/autenticar';
+    } else if (obj.rol === 'ADMIN') {
+      ruta = 'http://localhost:3000/api/admins/autenticar';
+    } else {
+      throw new Error('Rol no válido');
+    }
+
+    let response = await fetch(ruta, {
       method: 'POST',
       body: JSON.stringify(obj),
       headers: { 'Content-Type': 'application/json;charset=utf-8' }
     });
+
     if (response.ok) {
       return await response.json();
     } else {
@@ -270,9 +284,9 @@ export class LibreriaProxy {
   }
 
   /**
-   * Usuarios (registro genérico)
+   Usuarios (registro genérico)
    */
-
+/*
   async addUsuario(obj) {
     let response = await fetch('http://localhost:3000/api/usuarios', {
       method: 'POST',
@@ -285,9 +299,33 @@ export class LibreriaProxy {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
   }
+    */
+   async addUsuario(obj) {
+  // Decidir la ruta según el rol
+  let ruta;
+  if (obj.rol === 'CLIENTE') {
+    ruta = 'http://localhost:3000/api/clientes';
+  } else if (obj.rol === 'ADMIN') {
+    ruta = 'http://localhost:3000/api/admins';
+  } else {
+    throw new Error('Rol no válido');
+  }
+
+  let response = await fetch(ruta, {
+    method: 'POST',
+    body: JSON.stringify(obj),
+    headers: { 'Content-Type': 'application/json;charset=utf-8' }
+  });
+  
+  if (response.ok) {
+    return await response.json();
+  } else {
+    throw new Error(`Error ${response.status}: ${response.statusText}`);
+  }
+}
 
   /**
-   * Administradores
+   Administradores
    */
 
   async getAdmins() {
@@ -387,6 +425,7 @@ export class LibreriaProxy {
     }
   }
 
+  /*
   async autenticarAdmin(obj) {
     let response = await fetch('http://localhost:3000/api/admins/autenticar', {
       method: 'POST',
@@ -399,9 +438,9 @@ export class LibreriaProxy {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
   }
+    */
 
   async updateUsuario(obj) {
-    // Decidir según el rol a qué endpoint llamar
     if (obj.rol === 'CLIENTE') {
       return this.updateCliente(obj);
     } else if (obj.rol === 'ADMIN') {
@@ -409,7 +448,7 @@ export class LibreriaProxy {
     }
   }
   /**
-   * Facturas
+   Facturas
    */
 
   async getFacturas() {
@@ -496,7 +535,7 @@ export class LibreriaProxy {
     }
   }
 
- 
+
 }
 
 export const proxy = new LibreriaProxy();

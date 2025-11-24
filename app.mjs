@@ -168,6 +168,7 @@ app.post('/api/clientes/signin', function (req, res, next) {
   }
 });
 
+/*
 app.post('/api/usuarios', function (req, res, next) {
   console.log('/api/usuarios')
   try {
@@ -189,6 +190,7 @@ app.post('/api/usuarios/autenticar', function (req, res, next) {
     res.status(401).json({ error: err.message })
   }
 });
+*/
 
 // PUT /api/clientes - Reemplazar todos los clientes
 app.put('/api/clientes', function (req, res, next) {
