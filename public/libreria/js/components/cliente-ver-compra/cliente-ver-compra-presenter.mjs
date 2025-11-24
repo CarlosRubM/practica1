@@ -67,17 +67,17 @@ pintarItem(item) {
 
   return clone;
 }
- /*  se podria hacer asi pero hemos optado por usar libreriaSession
+
   getFacturaIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
     return Number(params.get('id'));
-  } */
+  }
 
   async refresh() {
     await super.refresh();
     await this.mensajesPresenter.refresh();
-    const facturaId = Number(libreriaSession.getFacturaId());
-    //const facturaId = this.getFacturaIdFromUrl();
+
+    const facturaId = this.getFacturaIdFromUrl();
     const todasFacturas = await this.model.getFacturas();
     this.factura = todasFacturas.find(f => f._id === facturaId);
 

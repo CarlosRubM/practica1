@@ -61,7 +61,6 @@ export class ClienteListaComprasPresenter extends Presenter {
 
     try {
       const facturaId = event.target.dataset.facturaId;
-      libreriaSession.setFacturaId(facturaId);
       await router.navigate(`/libreria/cliente-ver-compra.html?id=${facturaId}`);
     } catch (err) {
       console.error('Error al navegar:', err);

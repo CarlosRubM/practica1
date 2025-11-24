@@ -2,7 +2,7 @@
 import { ROL } from "../model/model.mjs";
 const USUARIO_ID = 'USUARIO_ID';
 const USUARIO_ROL = 'USUARIO_ROL';
-const FACTURA_ID = 'FACTURA_ID'; // Nueva constante
+
 
 class LibreriaSession {
   formatoMoneda;
@@ -40,7 +40,6 @@ class LibreriaSession {
   salir() {
     sessionStorage.removeItem(USUARIO_ID);
     sessionStorage.removeItem(USUARIO_ROL);
-    sessionStorage.removeItem(FACTURA_ID); // Limpiar también la factura
   }
 
   esInvitado() {
@@ -55,18 +54,7 @@ class LibreriaSession {
     return !this.esInvitado() && this.getUsuarioRol() === ROL.ADMIN;
   }
 
-  // Nuevos métodos para factura
-  setFacturaId(id) {
-    sessionStorage.setItem(FACTURA_ID, id);
-  }
 
-  getFacturaId() {
-    return sessionStorage.getItem(FACTURA_ID);
-  }
-
-  removeFacturaId() {
-    sessionStorage.removeItem(FACTURA_ID);
-  }
 
   formatearMoneda(valor) {
     return this.formatoMoneda.format(valor).replace('.', ','); //añadimos que reemplace el punto por una coma
