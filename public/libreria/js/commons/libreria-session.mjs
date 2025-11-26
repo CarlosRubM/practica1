@@ -1,5 +1,5 @@
-//TENEMOS QUE IMPORTAR ROL de model.mjs
-import { ROL } from "../model/model.mjs";
+//Ahora importamos de proxy
+import { ROL } from "../model/proxy.mjs";
 const USUARIO_ID = 'USUARIO_ID';
 const USUARIO_ROL = 'USUARIO_ROL';
 

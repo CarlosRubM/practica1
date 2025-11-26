@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node .",
     "test-rest": ".\\node_modules\\.bin\\mocha .\\test\\rest.spec.mjs --reporter spec --exit",
+    "test-model": ".\\node_modules\\.bin\\mocha .\\test\\model.spec.mjs --reporter spec --exit",
     "test:web": "echo \"Abre http://localhost:3000/libreria/test/test.html\"",
     "test:node": "mocha \"public/libreria/test-node/**/*.spec.mjs\" --timeout 999999 --reporter spec"
   },

@@ -366,6 +366,16 @@ describe("AGREGAR, MODIFICAR Y ELIMINAR", function () {
             assert.equal(actualizado.email, "nuevo@test.com");
             assert.equal(actualizado.nombre, "Nombre Nuevo");
         });
+        it("updateAdmin() debe modificar admin correctamente", async function () {
+            let admin = await proxy.addAdmin({ email: "test1@test.com", password: "1231", dni: "1111" });
+            let actualizado = await proxy.updateAdmin({
+                _id: admin._id,
+                email: "nuevo1@test.com",
+                nombre: "Nombre Nuevo1"
+            });
+            assert.equal(actualizado.email, "nuevo1@test.com");
+            assert.equal(actualizado.nombre, "Nombre Nuevo1");
+        });
 
         it("autenticarCliente() debe retornar usuario si credenciales correctas", async function () {
             await proxy.addCliente({ email: "cliente@test.com", password: "pass123", dni: "111" });

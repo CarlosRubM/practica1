@@ -29,10 +29,9 @@ describe("REST libreria", function () {
       assert.equal(response.status, 200);
       assert.isTrue(response.ok);
       let libros = response.body;
-      assert.equal(0, libros.length); //espera que no haya libros, COMENTAMOS EL SEED DE app.mjs
+      assert.equal(0, libros.length); 
 
       let libros_esperados = ISBNS.map(isbn => crearLibro(isbn));
-      libros_esperados.forEach((l, i) => l._id = i + 1);
 
       request = requester.put(`${URL}/libros`);
       response = await request.send(libros_esperados);
@@ -50,7 +49,7 @@ describe("REST libreria", function () {
         assert.equal(esperado.portada, actual.portada, "La portada no coincide");
         assert.equal(esperado.stock, actual.stock, "El stock no coincide");
         assert.equal(esperado.precio, actual.precio, "El precio no coincide");
-        assert.equal(esperado._id, actual._id, "El _id no coincide");
+        assert.exists(actual._id, "El _id no está definido");  //Unicamente comprobamos que existe el id
       });
       requester.close();
     });
@@ -108,9 +107,11 @@ describe("REST libreria", function () {
       let response = await request.send(libros);
       assert.equal(response.status, 200);
       assert.isTrue(response.ok);
+      // Aquí recuperamos los libros con sus IDs asignados por la base de datos
       libros = response.body;
 
       let responses = libros.map(async esperado => {
+        // Usamos el ID real que nos devolvió el PUT anterior
         request = requester.get(`${URL}/libros/${esperado._id}`);
         response = await request.send();
         assert.equal(response.status, 200);

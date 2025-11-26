@@ -7,7 +7,6 @@ import { InvitadoRegistroPresenter } from "./components/invitado-registro/invita
 import { InvitadoIngresoPresenter } from "./components/invitado-ingreso/invitado-ingreso-presenter.mjs";
 import { ClienteHomePresenter } from "./components/cliente-home/cliente-home-presenter.mjs";
 import { ClienteVerLibroPresenter } from "./components/cliente-ver-libro/cliente-ver-libro-presenter.mjs";
-import { seed } from "./model/seeder.mjs";
 import { ClientePerfilPresenter } from "./components/cliente-perfil/cliente-perfil-presenter.mjs"; 
 import { ClienteCarroPresenter } from "./components/cliente-carro/cliente-carro-presenter.mjs";
 import { ClienteComprarCarroPresenter } from "./components/cliente-comprar-carro/cliente-comprar-carro-presenter.mjs";

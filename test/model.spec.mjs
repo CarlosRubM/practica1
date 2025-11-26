@@ -1,6 +1,9 @@
-import * as chai from 'https://cdnjs.cloudflare.com/ajax/libs/chai/5.1.1/chai.js';
-import { Libreria, ROL } from '../js/model/model.mjs';
-let assert = chai.assert;
+import * as chaiModule from "chai";
+const chai = chaiModule; 
+const assert = chai.assert;
+import { Libreria, ROL } from '../model/model.mjs';
+
+const model = new Libreria();
 
 describe("GETTERS Y SETTERS", function () {
 
