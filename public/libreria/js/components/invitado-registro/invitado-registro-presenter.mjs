@@ -72,6 +72,10 @@ export class InvitadoRegistroPresenter extends Presenter {
     return this.rolSelect.value;
   }
 
+  get form() {
+    return document.querySelector('#registroForm'); //AÑADIDO PARA VALIDACION (NUEVO)
+  }
+
   get usuarioObject() {
     return {
       dni: this.dniText,
@@ -85,6 +89,11 @@ export class InvitadoRegistroPresenter extends Presenter {
   }
 
   async registroClick(event) {
+    if (this.form && !this.form.checkValidity()) {
+        this.form.reportValidity(); // Muestra las burbujas de error nativas
+        event.preventDefault();     // Evita recarga de página
+        return;                     // DETIENE la ejecución aquí si hay error
+    }
     event.preventDefault();
     try {
       console.log('Iniciando registro...', this.usuarioObject);
