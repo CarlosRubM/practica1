@@ -7,6 +7,23 @@ export class LibreriaProxy {
 
   constructor() { }
 
+  //METODO PARA COGER LOS MENSAJES DE ERROR DEL SERVIDOR CORRECTOS (LOS QUE MOSTRABAMOS EN EL MODELO ANTERIOR)
+  async handleError(response) {
+     // Mensaje de error por defecto: usa código y texto del estado HTTP.
+    let errorMessage = `Error ${response.status}: ${response.statusText}`;
+    try {
+      // Intentamos leer el cuerpo de la respuesta como JSON (LOS QUE ESTABLECEMOS EN EL app.mjs)
+      const errorData = await response.json();
+      // Si el servidor devuelve un objeto { error: "mensaje" } lo devolvemos porque es el que queremos
+      if (errorData && errorData.error) {
+        errorMessage = errorData.error;
+      }
+    } catch (e) {
+      // Si no pues se deja el por defecto de arriba
+    }
+    throw new Error(errorMessage);
+  }
+
   /**
    Libros
    */
@@ -16,7 +33,8 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      //throw new Error(`Error ${response.status}: ${response.statusText}`);  ESTO MUESTRA ERROR 500, ETC 
+      await this.handleError(response);
     }
   }
 
@@ -29,7 +47,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -42,7 +60,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -53,7 +71,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -62,7 +80,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -71,7 +89,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -80,7 +98,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -91,7 +109,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -104,7 +122,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -117,7 +135,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -130,7 +148,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -143,7 +161,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -154,7 +172,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -163,7 +181,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -172,7 +190,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -181,7 +199,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -192,7 +210,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -205,7 +223,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -244,7 +262,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -253,7 +271,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -266,7 +284,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -279,7 +297,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -320,7 +338,7 @@ export class LibreriaProxy {
   if (response.ok) {
     return await response.json();
   } else {
-    throw new Error(`Error ${response.status}: ${response.statusText}`);
+    await this.handleError(response);
   }
 }
 
@@ -333,7 +351,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -346,7 +364,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -359,7 +377,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -370,7 +388,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -379,7 +397,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -388,7 +406,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -397,7 +415,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -408,7 +426,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -421,7 +439,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -456,7 +474,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -469,7 +487,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -480,7 +498,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -489,7 +507,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -498,7 +516,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -507,7 +525,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -520,7 +538,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
@@ -531,7 +549,7 @@ export class LibreriaProxy {
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      await this.handleError(response);
     }
   }
 
