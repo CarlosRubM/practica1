@@ -139,9 +139,13 @@ describe("REST libreria", function () {
       assert.equal(response.status, 200);
       assert.isTrue(response.ok);
       let libro = response.body;
-      assert.isDefined(libro._id, "El _id debe estar definido");
+      assert.exists(libro._id, "El _id debe estar definido");
       assert.equal(libro.isbn, libro_nuevo.isbn, "El isbn no coincide");
       assert.equal(libro.titulo, libro_nuevo.titulo, "El titulo no coincide");
+      assert.equal(libro.autores, libro_nuevo.autores, "Los autores no coinciden");
+      assert.equal(libro.resumen, libro_nuevo.resumen, "El resumen no coincide");
+      assert.equal(libro.stock, libro_nuevo.stock, "El stock no coincide");
+      assert.equal(libro.precio, libro_nuevo.precio, "El precio no coincide");
       requester.close();
     });
 
@@ -260,9 +264,14 @@ describe("REST libreria", function () {
       let request = requester.post(`${URL}/clientes`);
       let response = await request.send(cliente_nuevo);
       assert.equal(response.status, 200);
-      assert.isDefined(response.body._id);
+      assert.exists(response.body._id);
       assert.equal(response.body.email, cliente_nuevo.email);
       assert.equal(response.body.rol, 'CLIENTE');
+      assert.equal(response.body.dni, cliente_nuevo.dni);
+      assert.equal(response.body.nombre, cliente_nuevo.nombre);
+      assert.equal(response.body.apellidos, cliente_nuevo.apellidos);
+      assert.equal(response.body.direccion, cliente_nuevo.direccion);
+      assert.equal(response.body.password, cliente_nuevo.password);
       requester.close();
     });
 
@@ -527,6 +536,11 @@ describe("REST libreria", function () {
       assert.isDefined(response.body._id);
       assert.equal(response.body.email, admin.email);
       assert.equal(response.body.rol, 'ADMIN');
+      assert.equal(response.body.dni, admin.dni);
+      assert.equal(response.body.nombre, admin.nombre);
+      assert.equal(response.body.apellidos, admin.apellidos);
+      assert.equal(response.body.direccion, admin.direccion);
+      assert.equal(response.body.password, admin.password);
       requester.close();
     });
 

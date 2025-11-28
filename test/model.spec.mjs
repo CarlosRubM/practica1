@@ -264,7 +264,10 @@ describe("AGREGAR, MODIFICAR Y ELIMINAR", function () {
             });
             assert.equal(libro.isbn, "978-3-16-148410-0");
             assert.equal(libro.titulo, "JavaScript: The Good Parts");
-            assert.isNumber(libro._id);
+            assert.equal(libro.autores, "Douglas Crockford");
+            assert.equal(libro.precio, 29.99);
+            assert.equal(libro.stock, 10); //se comprueban todos los campos
+            assert.exists(libro._id);
             assert.equal(model.getLibros().length, 1);
         });
 
@@ -301,8 +304,12 @@ describe("AGREGAR, MODIFICAR Y ELIMINAR", function () {
             });
             assert.equal(cliente.email, "cliente@test.com");
             assert.equal(cliente.rol, ROL.CLIENTE);
+            assert.equal(cliente.nombre, "Juan");
+            assert.equal(cliente.apellidos, "Pérez");
+            assert.equal(cliente.dni, "12345678A");
+            assert.equal(cliente.password,"123456");
             assert.isObject(cliente.carro);
-            assert.isNumber(cliente._id);
+            assert.exists(cliente._id);
         });
 
         it("addAdmin() debe agregar administrador correctamente", function () {
@@ -315,7 +322,11 @@ describe("AGREGAR, MODIFICAR Y ELIMINAR", function () {
             });
             assert.equal(admin.email, "admin@test.com");
             assert.equal(admin.rol, ROL.ADMIN);
-            assert.isNumber(admin._id);
+            assert.equal(admin.nombre, "María");
+            assert.equal(admin.apellidos, "García");
+            assert.equal(admin.dni, "87654321B");
+            assert.equal(admin.password,"admin123");
+            assert.exists(admin._id);
         });
 
         it("updateUsuario() debe modificar usuario correctamente", function () {
