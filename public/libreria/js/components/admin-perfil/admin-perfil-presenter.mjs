@@ -116,7 +116,7 @@ export class AdminPerfilPresenter extends Presenter {
         await this.mensajesPresenter.refresh();
 
         //Obtenemos usuario actual
-        const id = Number(libreriaSession.getUsuarioId());
+        const id = libreriaSession.getUsuarioId();
         console.log('ID obtenido de session:', id);
         console.log('Usuarios en el modelo:', this.model.usuarios);
         this.usuario = await this.model.getAdminPorId(id);

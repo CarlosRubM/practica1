@@ -85,8 +85,9 @@ export class ClienteVerLibroPresenter extends Presenter {
   async agregarAlCarro(event) {
     event.preventDefault();
     try {
-      const clienteId = Number(libreriaSession.getUsuarioId());
-      const libroId = Number(this.id);
+      //YA NO HACEMOS PARSE A NUMBER PORQUE MONGO ASIGNA UN OBJETO ID (string) Y NO UN NUMBER
+      const clienteId = libreriaSession.getUsuarioId();
+      const libroId = this.id;
 
       console.log('Agregar al carrito, clienteID:', clienteId, 'libroID:', libroId);
 

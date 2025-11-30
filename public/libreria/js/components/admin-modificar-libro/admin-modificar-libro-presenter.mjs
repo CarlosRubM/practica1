@@ -119,7 +119,7 @@ export class AdminModificarLibroPresenter extends Presenter {
         await this.mensajesPresenter.refresh();
 
         const urlParams = new URLSearchParams(window.location.search);
-        const id = Number(urlParams.get('id'));
+        const id = urlParams.get('id');
         
         console.log('ID obtenido de URL:', id);
         console.log('Libros en el modelo:', this.model.libros);

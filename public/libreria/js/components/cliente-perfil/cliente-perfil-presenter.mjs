@@ -116,7 +116,7 @@ export class ClientePerfilPresenter extends Presenter {
         await this.mensajesPresenter.refresh();
 
         //Obtenemos usuario actual
-        const id = Number(libreriaSession.getUsuarioId());
+        const id = libreriaSession.getUsuarioId();
         this.usuario = await this.model.getClientePorId(id);
         //Prerellenamos el formulario con los datos actuales
         this.pintar(this.usuario); //sin esto el formulario estaria vacio

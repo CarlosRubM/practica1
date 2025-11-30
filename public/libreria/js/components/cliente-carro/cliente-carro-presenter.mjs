@@ -48,7 +48,7 @@ export class ClienteCarroPresenter extends Presenter {
 
     async cambiarCantidad(index, cantidad) {
         try {
-            const id = Number(libreriaSession.getUsuarioId());
+            const id = libreriaSession.getUsuarioId();
 
             // Actualizar o eliminar según cantidad
             if (cantidad <= 0) {
@@ -76,7 +76,7 @@ export class ClienteCarroPresenter extends Presenter {
     async refresh() {
         await super.refresh();
         await this.mensajesPresenter.refresh();
-        const id = Number(libreriaSession.getUsuarioId());
+        const id = libreriaSession.getUsuarioId();
         this.carro = await this.model.getCarroCliente(id);
         this.pintarCarro();
 

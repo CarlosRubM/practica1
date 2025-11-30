@@ -30,7 +30,7 @@ export class ClienteComprarCarroPresenter extends Presenter {
       razonSocial: this.razonSocialInput?.value,
       direccion: this.direccionInput?.value,
       email: this.emailInput?.value,
-      cliente: Number(libreriaSession.getUsuarioId())
+      cliente: libreriaSession.getUsuarioId()
     };
   }
 
@@ -74,7 +74,7 @@ export class ClienteComprarCarroPresenter extends Presenter {
 
   // Cambia la cantidad de un item del carro
   async cambiarCantidad(index, cantidad) {
-    const id = Number(libreriaSession.getUsuarioId());
+    const id = libreriaSession.getUsuarioId();
     await this.model.setClienteCarroItemCantidad(id, index, cantidad);
     this.carro = await this.model.getCarroCliente(id);
     this.pintarCarro();
@@ -102,7 +102,7 @@ export class ClienteComprarCarroPresenter extends Presenter {
     await super.refresh();
     await this.mensajesPresenter.refresh();
 
-    const id = Number(libreriaSession.getUsuarioId());
+    const id = libreriaSession.getUsuarioId();
     this.carro = await this.model.getCarroCliente(id);
     this.pintarCarro();
 

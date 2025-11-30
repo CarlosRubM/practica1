@@ -1,17 +1,17 @@
+import mongoose from 'mongoose';
 import { model, ROL } from './model.mjs';
+
+const uri = 'mongodb://127.0.0.1/libreria';
 
 export function crearLibro(isbn) {
   return {
     isbn: `${isbn}`,
     titulo: `TITULO_${isbn}`,
     autores: `AUTOR_A${isbn}; AUTOR_B${isbn}`,
-    resumen:
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ullamcorper massa libero, eget dapibus elit efficitur id. Suspendisse id dui et dui tincidunt fermentum. Integer vel felis purus. Integer tempor orci risus, at dictum urna euismod in. Etiam vitae nisl quis ipsum fringilla mollis. Maecenas vitae mauris sagittis, commodo quam in, tempor mauris. Suspendisse convallis rhoncus pretium. Sed egestas porta dignissim. Aenean nec ex lacus. Nunc mattis ipsum sit amet fermentum aliquam. Ut blandit posuere lacinia. Vestibulum elit arcu, consectetur nec enim quis, ullamcorper imperdiet nunc. Donec vel est consectetur, tincidunt nisi non, suscipit metus._[${isbn}]`,
+    resumen: `Lorem ipsum dolor sit amet..._[${isbn}]`,
     portada: `http://google.com/${isbn}`,
     stock: 5,
-    precio: (Math.random() * 100).toFixed(2),
-    // borrado: false,
-    // _id: -1,
+    precio: parseFloat((Math.random() * 100).toFixed(2)),
   };
 }
 
@@ -25,10 +25,10 @@ export function crearPersona(dni) {
     password: `${dni}`,
   };
 }
+
 export function crearCliente(dni) {
   let cliente = crearPersona(dni);
   cliente.rol = ROL.CLIENTE;
-  // cliente.carro = new Carro();
   return cliente;
 }
 
@@ -38,17 +38,36 @@ export function crearAdmin(dni) {
   return admin;
 }
 
+export async function seed() {
+  try {
+    await mongoose.connect(uri);
+    console.log('Connected to MongoDB');
 
-export function seed() {
-  const ISBNS = ['978-3-16-148410-0', '978-3-16-148410-1', '978-3-16-148410-2', '978-3-16-148410-3', '978-3-16-148410-4'];
-  let libros = ISBNS.map(isbn => crearLibro(isbn));
-  libros.forEach(l => model.addLibro(l));
+    // Limpiar colecciones
+    await model.setLibros([]);
+    const clientes = await model.getClientes();
+    await Promise.all(clientes.map(c => model.getUsuarioPorId(c._id).then(u => u.deleteOne())));
+    const admins = await model.getAdmins();
+    await Promise.all(admins.map(a => model.getUsuarioPorId(a._id).then(u => u.deleteOne())));
 
-  const A_DNIS = ['00000000A', '00000001A', '00000002A', '00000003A', '00000004A'];
-  let admins = A_DNIS.map(dni => crearAdmin(dni));
-  admins.forEach(a => model.addUsuario(a));
+    // Crear libros
+    const ISBNS = ['978-3-16-148410-0', '978-3-16-148410-1', '978-3-16-148410-2', 
+                   '978-3-16-148410-3', '978-3-16-148410-4'];
+    const libros = ISBNS.map(isbn => crearLibro(isbn));
+    await Promise.all(libros.map(l => model.addLibro(l)));
 
-  const C_DNIS = ['00000000C', '00000001C', '00000002C', '00000003C', '00000004C'];
-  let clientes = C_DNIS.map(dni => crearCliente(dni));
-  clientes.forEach(c => model.addUsuario(c));
+    // Crear admins
+    const A_DNIS = ['00000000A', '00000001A', '00000002A'];
+    const admins_data = A_DNIS.map(dni => crearAdmin(dni));
+    await Promise.all(admins_data.map(a => model.addUsuario(a)));
+
+    // Crear clientes
+    const C_DNIS = ['00000000C', '00000001C', '00000002C'];
+    const clientes_data = C_DNIS.map(dni => crearCliente(dni));
+    await Promise.all(clientes_data.map(c => model.addUsuario(c)));
+
+    console.log('Seed completed successfully');
+  } catch (err) {
+    console.error('Seed error:', err);
+  }
 }

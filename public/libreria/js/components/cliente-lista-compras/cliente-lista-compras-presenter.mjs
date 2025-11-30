@@ -73,7 +73,7 @@ export class ClienteListaComprasPresenter extends Presenter {
     await super.refresh();
     await this.mensajesPresenter.refresh();
 
-    const id = Number(libreriaSession.getUsuarioId());
+    const id = libreriaSession.getUsuarioId();
     const todasFacturas = await this.model.getFacturas();
     this.facturas = todasFacturas.filter(f => f.cliente?._id === id);
     this.pintarFacturas();

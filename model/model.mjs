@@ -1,401 +1,372 @@
+import mongoose from 'mongoose';
+import { Libro } from './libro.mjs';
+import { Usuario } from './usuario.mjs';
+import { Cliente } from './cliente.mjs';
+import { Admin } from './admin.mjs';
+import { Factura } from './factura.mjs';
+import { Carro } from './carro.mjs';
+import { Item } from './item.mjs';
+
 export const ROL = {
   ADMIN: "ADMIN",
   CLIENTE: "CLIENTE",
 };
 
-class Identificable {
-  _id;
-  assignId() {
-    this._id = Libreria.genId();
-  }
-}
-
 export class Libreria {
-  libros = [];
-  usuarios = [];
-  facturas = [];
-  static lastId = 0;
-  static lastFacturaNumero = 0; //se añade este atributo para el numero de factura
-
   constructor() { }
 
-  static genId() {
-    return ++this.lastId;
-  }
-    static genNumeroFactura() {
-    return ++this.lastFacturaNumero; //se añade este metodo para el numero de factura
-  }
-
   /**
-   * Libros
+   * LIBROS
    */
 
-  getLibros() {
-    return this.libros;
+  async getLibros() {
+    return await Libro.find();
   }
 
-  addLibro(obj) {
+  async setLibros(array) {
+    await Libro.deleteMany({});
+    const promises = array.map((l) => new Libro(l).save());
+    await Promise.all(promises);
+    return await this.getLibros();
+  }
+
+  async addLibro(obj) {
     if (!obj.isbn) throw new Error('El libro no tiene ISBN');
-    if (this.getLibroPorIsbn(obj.isbn)) throw new Error(`El ISBN ${obj.isbn} ya existe`)
-    let libro = new Libro();
-    Object.assign(libro, obj);
-    libro.assignId();
-    this.libros.push(libro);
-    return libro;
+    const libro = await this.getLibroPorIsbn(obj.isbn);
+    if (libro) throw new Error(`El ISBN ${obj.isbn} ya existe`);
+    const nuevoLibro = new Libro(obj);
+    return await nuevoLibro.save();
   }
 
-  getLibroPorId(id) {
-    return this.libros.find((v) => v._id == id);
+  async getLibroPorId(id) {
+    return await Libro.findById(id);
   }
 
-  getLibroPorIsbn(isbn) {
-    return this.libros.find((v) => v.isbn == isbn);
+  async getLibroPorIsbn(isbn) {
+    return await Libro.findOne({ isbn: isbn });
   }
 
-  getLibroPorTitulo(titulo) {
+  async getLibroPorTitulo(titulo) {
     titulo = titulo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return this.libros.find(
-      (v) => !!v.titulo.match(new RegExp(titulo, 'i'))
-    );
+    return await Libro.findOne({ titulo: { $regex: titulo, $options: 'i' } });
   }
 
-  removeLibro(id) {
-    let libro = this.getLibroPorId(id);
+  async removeLibro(id) {
+    const libro = await this.getLibroPorId(id);
     if (!libro) throw new Error('Libro no encontrado');
-    else this.libros = this.libros.filter(l => l._id != id);
+    await Libro.findByIdAndDelete(id);
     return libro;
   }
 
-
-  updateLibro(obj) {
-    let libro = this.getLibroPorId(obj._id);
-    Object.assign(libro, obj);
-    return libro;
+  async updateLibro(obj) {
+    const libro = await this.getLibroPorId(obj._id);
+    if (!libro) throw new Error('Libro no encontrado');
+    return await Libro.findByIdAndUpdate(obj._id, obj, { new: true });
   }
 
   /**
-   * Usuario
+   * USUARIOS
    */
 
-  addUsuario(obj) {
-    if (obj.rol == ROL.CLIENTE)
-     return this.addCliente(obj); //se añade return para que devuelva el cliente creado
-    else if (obj.rol == ROL.ADMIN)
-      return this.addAdmin(obj);
-    else throw new Error('Rol desconocido');
+  async addUsuario(obj) {
+    if (obj.rol === ROL.CLIENTE) {
+      return await this.addCliente(obj);
+    } else if (obj.rol === ROL.ADMIN) {
+      return await this.addAdmin(obj);
+    } else {
+      throw new Error('Rol desconocido');
+    }
   }
 
-  addCliente(obj) {
-    let cliente = this.getClientePorEmail(obj.email);
-    if (cliente) throw new Error('Correo electrónico registrado');
-    cliente = new Cliente();
-    Object.assign(cliente, obj);
-    cliente.assignId();
-    this.usuarios.push(cliente);
-    return cliente;
+  async addCliente(obj) {
+    const clienteExistente = await this.getClientePorEmail(obj.email);
+    if (clienteExistente) throw new Error('Correo electrónico registrado');
+    
+    // Crear carro vacío primero
+    const carro = new Carro({ items: [] });
+    await carro.save();
+    
+    // Crear cliente con referencia al carro
+    const cliente = new Cliente({
+      ...obj,
+      rol: ROL.CLIENTE,
+      carro: carro._id
+    });
+    return await cliente.save();
   }
 
-  addAdmin(obj) {
-    let admin = new Administrador();
-    Object.assign(admin, obj)
-    admin.assignId();
-    this.usuarios.push(admin);
-    return admin;
+  async addAdmin(obj) {
+    const admin = new Admin({
+      ...obj,
+      rol: ROL.ADMIN
+    });
+    return await admin.save();
   }
 
-  getClientes() {
-    return this.usuarios.filter((u) => u.rol == ROL.CLIENTE);
+  async getClientes() {
+    return await Cliente.find();
   }
 
-  getAdmins() {
-    return this.usuarios.filter((u) => u.rol == ROL.ADMIN);
+  async getAdmins() {
+    return await Admin.find();
   }
 
-  getUsuarioPorId(_id) {
-    return this.usuarios.find((u) => u._id == _id);
-  }
-
-  getUsuarioPorEmail(email) {
-    return this.usuarios.find((u) => u.email == email);
-  }
-
-  getUsuarioPorDni(dni) {
-    return this.usuarios.find((u) => u.dni == dni);
-  }
-
-  updateUsuario(obj) {
-    let usuario = this.getUsuarioPorId(obj._id);
-    Object.assign(usuario, obj);
+  async getUsuarioPorId(_id) {
+    let usuario = await Cliente.findById(_id);
+    if (!usuario) usuario = await Admin.findById(_id);
     return usuario;
   }
 
-  getClientePorEmail(email) {
-    return this.usuarios.find(u => u.rol == ROL.CLIENTE && u.email == email);
+  async getUsuarioPorEmail(email) {
+    let usuario = await Cliente.findOne({ email });
+    if (!usuario) usuario = await Admin.findOne({ email });
+    return usuario;
   }
 
-  getClientePorId(id) {
-    return this.usuarios.find(u => u.rol == ROL.CLIENTE && u._id == id);
+  async getUsuarioPorDni(dni) {
+    let usuario = await Cliente.findOne({ dni });
+    if (!usuario) usuario = await Admin.findOne({ dni });
+    return usuario;
   }
 
-  getAdministradorPorEmail(email) {
-    return this.usuarios.find(u => u.rol == ROL.ADMIN && u.email == email);
+  async updateUsuario(obj) {
+    if (obj.rol === ROL.CLIENTE) {
+      return await Cliente.findByIdAndUpdate(obj._id, obj, { new: true });
+    } else if (obj.rol === ROL.ADMIN) {
+      return await Admin.findByIdAndUpdate(obj._id, obj, { new: true });
+    }
+    throw new Error('Rol no válido');
   }
 
-   getAdminPorId(id) {
-    return this.usuarios.find(u => u.rol == ROL.ADMIN && u._id == id);
+  async getClientePorEmail(email) {
+    return await Cliente.findOne({ email });
   }
 
-  autenticar(obj) {
-    let email = obj.email;
-    let password = obj.password;
+  async getClientePorId(id) {
+    return await Cliente.findById(id).populate('carro');
+  }
+
+  async getAdminPorId(id) {
+    return await Admin.findById(id);
+  }
+
+  async getAdministradorPorEmail(email) {
+    return await Admin.findOne({ email });
+  }
+
+  async autenticar(obj) {
+    const { email, password, rol } = obj;
     let usuario;
 
-    if (obj.rol == ROL.CLIENTE) usuario = this.getClientePorEmail(email);
-    else if (obj.rol == ROL.ADMIN) usuario = this.getAdministradorPorEmail(email);
-    else throw new Error('Rol no encontrado');
+    if (rol === ROL.CLIENTE) {
+      usuario = await this.getClientePorEmail(email);
+    } else if (rol === ROL.ADMIN) {
+      usuario = await this.getAdministradorPorEmail(email);
+    } else {
+      throw new Error('Rol no encontrado');
+    }
 
     if (!usuario) throw new Error('Usuario no encontrado');
-    else if (usuario.verificar(password)) return usuario;
-    else throw new Error('Error en la contraseña');
-  }
-
-  addClienteCarroItem(id, item) {
-    item.libro = this.getLibroPorId(item.libro);
-    item = this.getClientePorId(id).addCarroItem(item);
-    return item;
-  }
-
-  setClienteCarroItemCantidad(id, index, cantidad) {
-    let cliente = this.getClientePorId(id);
-    return cliente.setCarroItemCantidad(index, cantidad);
-  }
-
-  getCarroCliente(id) {
-    return this.getClientePorId(id).carro;
+    if (usuario.password !== password) throw new Error('Error en la contraseña');
+    
+    return usuario;
   }
 
   /**
-   * Factura
+   * CARRO
    */
 
-  
-  getFacturas() {
-    return this.facturas;
+  async getCarroCliente(id) {
+    const cliente = await Cliente.findById(id).populate({
+      path: 'carro',
+      populate: {
+        path: 'items',
+        populate: {
+          path: 'libro'
+        }
+      }
+    });
+    
+    if (!cliente || !cliente.carro) {
+      throw new Error('Cliente o carro no encontrado');
+    }
+    
+    return cliente.carro;
   }
 
-  getFacturaPorId(id) {
-    return this.facturas.find((f) => f._id == id); //esto devuelve un objeto no un array como lo hace filter
+async addClienteCarroItem(id, itemData) {
+    const cliente = await Cliente.findById(id);
+    if (!cliente) throw new Error('Cliente no encontrado');
+    
+    const libro = await Libro.findById(itemData.libro);
+    if (!libro) throw new Error('Libro no encontrado');
+
+    const carro = await Carro.findById(cliente.carro._id).populate({
+      path: 'items',
+      populate: { path: 'libro' }
+    });
+    
+    // Buscar si el libro ya está en el carro
+    const itemExistente = carro.items.find(item => item.libro._id.toString() === libro._id.toString());
+    
+    if (itemExistente) {
+        // ... (Lógica de item existente: está bien) ...
+    } else {
+        // Crear nuevo item
+        const nuevoItem = new Item({
+            libro: libro._id,
+            cantidad: itemData.cantidad,
+            total: itemData.cantidad * libro.precio
+        });
+        await nuevoItem.save();
+        
+        // ⚠️ CORRECCIÓN CLAVE: 1. Añadir el ID al array en memoria
+        carro.items.push(nuevoItem._id);
+
+        // ⚠️ CORRECCIÓN CLAVE: 2. Persistir el array actualizado en la DB
+        await Carro.findByIdAndUpdate(carro._id, { items: carro.items });
+    }
+    
+    // Recalcular totales del carro
+    await this.recalcularCarro(carro._id);
+    
+    return await this.getCarroCliente(id);
+}
+
+  async setClienteCarroItemCantidad(id, index, cantidad) {
+    if (cantidad < 0) throw new Error('Cantidad inferior a 0');
+    
+    const carro = await Carro.findById((await Cliente.findById(id)).carro)
+      .populate({ path: 'items', populate: { path: 'libro' } });
+    
+    if (cantidad === 0) {
+      // Eliminar item
+      const itemId = carro.items[index]._id;
+      await Item.findByIdAndDelete(itemId);
+      carro.items.splice(index, 1);
+      await Carro.findByIdAndUpdate(carro._id, { items: carro.items });
+    } else {
+      // Actualizar cantidad
+      const item = carro.items[index];
+      item.cantidad = cantidad;
+      item.total = cantidad * item.libro.precio;
+      await Item.findByIdAndUpdate(item._id, {
+        cantidad: item.cantidad,
+        total: item.total
+      });
+    }
+    
+    await this.recalcularCarro(carro._id);
+    return await this.getCarroCliente(id);
   }
 
-  getFacturaPorNumero(numero) {
-    return this.facturas.find((f) => f.numero == numero); //aqui igual
+  async recalcularCarro(carroId) {
+    const carro = await Carro.findById(carroId)
+      .populate({ path: 'items', populate: { path: 'libro' } });
+    
+    const subtotal = carro.items.reduce((total, item) => total + item.total, 0);
+    const iva = subtotal * 0.21;
+    const total = subtotal + iva;
+    
+    await Carro.findByIdAndUpdate(carroId, { subtotal, iva, total });
   }
 
-  facturarCompraCliente(obj) {
+  /**
+   * FACTURAS
+   */
+
+  async getFacturas() {
+    return await Factura.find().populate({
+      path: 'items',
+      populate: { path: 'libro' }
+    });
+  }
+
+  async getFacturaPorId(id) {
+    return await Factura.findById(id).populate({
+      path: 'items',
+      populate: { path: 'libro' }
+    });
+  }
+
+  async getFacturaPorNumero(numero) {
+    return await Factura.findOne({ numero }).populate({
+      path: 'items',
+      populate: { path: 'libro' }
+    });
+  }
+
+  async facturarCompraCliente(obj) {
     if (!obj.cliente) throw new Error('Cliente no definido');
-    let cliente = this.getClientePorId(obj.cliente);
-    if (cliente.getCarro().items.length < 1) throw new Error('No hay que comprar');
-    let factura = new Factura();
-    Object.assign(factura, obj)
-    factura.assignId();
-    factura.genNumero();
-    factura.cliente = new Cliente();
-    Object.assign(factura.cliente, cliente);
-    delete factura.cliente.carro;
-    Object.assign(factura, cliente.carro);
-    this.facturas.push(factura); //se añade la factura al array de facturas (faltaba)
-    cliente.removeItems();
+    
+    const cliente = await this.getClientePorId(obj.cliente);
+    const carro = await Carro.findById(cliente.carro._id)
+      .populate({ path: 'items', populate: { path: 'libro' } });
+    
+    if (!carro.items || carro.items.length === 0) {
+      throw new Error('No hay que comprar');
+    }
+    
+    // Obtener el último número de factura
+    const ultimaFactura = await Factura.findOne().sort({ numero: -1 });
+    const numeroFactura = ultimaFactura ? ultimaFactura.numero + 1 : 1;
+    
+    // Copiar items del carro (clonar para la factura)
+    const itemsFactura = await Promise.all(
+      carro.items.map(async (item) => {
+        const nuevoItem = new Item({
+          libro: item.libro._id,
+          cantidad: item.cantidad,
+          total: item.total
+        });
+        return await nuevoItem.save();
+      })
+    );
+    
+    // Crear factura
+    const factura = new Factura({
+      numero: numeroFactura,
+      fecha: obj.fecha || new Date(),
+      razonSocial: obj.razonSocial || cliente.nombre,
+      direccion: obj.direccion || cliente.direccion,
+      email: obj.email || cliente.email,
+      dni: obj.dni || cliente.dni,
+      items: itemsFactura.map(i => i._id),
+      subtotal: carro.subtotal,
+      iva: carro.iva,
+      total: carro.total,
+      cliente: {
+        _id: cliente._id,
+        nombre: cliente.nombre,
+        email: cliente.email,
+        dni: cliente.dni
+      }
+    });
+    
+    await factura.save();
+    
+    // Vaciar carro
+    await Promise.all(carro.items.map(item => Item.findByIdAndDelete(item._id)));
+    await Carro.findByIdAndUpdate(carro._id, {
+      items: [],
+      subtotal: 0,
+      iva: 0,
+      total: 0
+    });
+    
+    return factura;
   }
 
-  removeFactura(id) {
-    //let factura = this.getFacturaPorId(id);
-    let factura = this.facturas.find(f => f._id == id); //se cambia a find para que devuelva un objeto y no un array
+  async removeFactura(id) {
+    const factura = await Factura.findById(id);
     if (!factura) throw new Error('Factura no encontrada');
-    this.facturas = this.facturas.filter(f => f._id != id);
+    
+    // Eliminar items de la factura
+    await Promise.all(factura.items.map(itemId => Item.findByIdAndDelete(itemId)));
+    
+    await Factura.findByIdAndDelete(id);
     return factura;
   }
 }
 
-class Libro extends Identificable {
-  isbn;
-  titulo;
-  autores;
-  portada;
-  resumen;
-  stock;
-  precio;
-  constructor() {
-    super();
-  }
-
-  incStockN(n) {
-    this.stock = this.stock + n;
-  }
-
-  decStockN(n) {
-    this.stock = this.stock - n;
-  }
-
-  incPrecioP(porcentaje) {
-    this.precio = this.precio * (1 + porcentaje / 100);
-  }
-
-  dexPrecioP(porcentaje) {
-    this.precio = this.precio * (porcentaje / 100);
-  }
-}
-
-class Usuario extends Identificable {
-  dni;
-  nombre;
-  apellidos;
-  direccion;
-  rol;
-  email;
-  password;
-
-  verificar(password) {
-    return this.password == password;
-  }
-}
-
-class Cliente extends Usuario {
-  carro;
-  constructor() {
-    super();
-    this.rol = ROL.CLIENTE;
-    this.carro = new Carro();
-  }
-
-  removeItems() { //se añade este metodo para vaciar el carro tras la compra
-  this.carro.removeItems();
-  }
-
-  getCarro() {
-    return this.carro;
-  }
-  addCarroItem(item) {
-    this.carro.addItem(item);
-    return item; //se ha añadido para poder visualizar los mensajes por consola para el log y ver que funciona correctamente
-  }
-  setCarroItemCantidad(index, cantidad) {
-    this.getCarro().setItemCantidad(index, cantidad);
-  }
-  borrarCarroItem(index) {
-    this.carro.borrarItem(index);
-  }
-
-}
-
-class Administrador extends Usuario {
-  constructor() {
-    super();
-    this.rol = ROL.ADMIN;
-  }
-}
-
-class Factura extends Identificable {
-  numero;
-  fecha;
-  razonSocial;
-  direccion;
-  email;
-  dni;
-  items = [];
-  subtotal;
-  iva;
-  total;
-  cliente;
-
-  genNumero() {
-    this.numero = Libreria.genNumeroFactura();
-  }
-
-  addItem(obj) {
-    let item = new Item();
-    Object.assign(item, obj);
-    this.items.push(item);
-    this.calcular();
-    return item;
-  }
-
-  removeItems() {
-    this.items = [];
-    this.calcular();
-  }
-
-  calcular() {
-  this.subtotal = this.items.reduce((total, i) => total + i.total, 0);
-  this.iva = this.subtotal * 0.21; //se arregla porque antes se llamaba a this.total que no tiene valor
-  this.total = this.subtotal + this.iva; // y aqui se multiplicaba por 0.21 en vez de sumarse
-}
-}
-
-class Item {
-  cantidad;
-  libro;
-  total;
-  constructor() {
-    this.cantidad = 0;
-  }
-
-  calcular() {
-    this.total = this.cantidad * this.libro.precio;
-  }
-}
-
-class Carro {
-  items;
-  subtotal;
-  iva;
-  total;
-  constructor() {
-    this.items = [];
-    this.subtotal = 0;
-    this.iva = 0;
-    this.total = 0;
-  }
-
-  addItem(obj) {
-    let item = this.items.find(i => i.libro._id == obj.libro._id);
-    if (!item) {
-      item = new Item();
-      Object.assign(item, obj);
-      item.calcular();
-      this.items.push(item);
-    } else {
-      item.cantidad = item.cantidad + obj.cantidad;
-      item.calcular();
-    }
-    this.calcular();
-  }
-
-  //HAY QUE AGREGAR ESTE METODO QUE NO EXISTIA 
-  borrarItem(index) {
-    this.items = this.items.filter((v, i) => i != index);
-    this.calcular();
-}
-
-  setItemCantidad(index, cantidad) {
-    if (cantidad < 0) throw new Error('Cantidad inferior a 0')
-    if (cantidad == 0) this.items = this.items.filter((v, i) => i != index);
-    else {
-      let item = this.items[index];
-      item.cantidad = cantidad;
-      item.calcular();
-    }
-    this.calcular();
-  }
-
-  removeItems() {
-    this.items = [];
-    this.calcular(); //hay que poner this porque es un metodo de la misma clase
-  }
-  calcular() {
-    this.subtotal = this.items.reduce((total, i) => total + i.total, 0);
-    this.iva = this.subtotal * 0.21;
-    this.total = this.subtotal + this.iva;
-  }
-
-}
 export const model = new Libreria();

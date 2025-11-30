@@ -85,7 +85,7 @@ export class AdminVerLibroPresenter extends Presenter {
   async borrarLibro(event) {
     event.preventDefault();
     try {
-      const libroId = Number(this.id);
+      const libroId = this.id;
 
       await this.model.removeLibro(libroId);
 

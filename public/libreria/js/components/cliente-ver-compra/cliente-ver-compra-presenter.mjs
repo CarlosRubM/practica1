@@ -70,7 +70,7 @@ pintarItem(item) {
 
   getFacturaIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
-    return Number(params.get('id'));
+    return params.get('id');
   }
 
   async refresh() {
@@ -78,9 +78,8 @@ pintarItem(item) {
     await this.mensajesPresenter.refresh();
 
     const facturaId = this.getFacturaIdFromUrl();
-    const todasFacturas = await this.model.getFacturas();
-    this.factura = todasFacturas.find(f => f._id === facturaId);
-
+    this.factura = await this.model.getFacturaPorId(facturaId);
+    
     this.pintarFactura();
   }
 }
