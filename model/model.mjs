@@ -210,7 +210,13 @@ async addClienteCarroItem(id, itemData) {
     const itemExistente = carro.items.find(item => item.libro._id.toString() === libro._id.toString());
     
     if (itemExistente) {
-        // ... (Lógica de item existente: está bien) ...
+        // Incrementar cantidad del item existente
+        itemExistente.cantidad += itemData.cantidad;
+        itemExistente.total = itemExistente.cantidad * libro.precio;
+        await Item.findByIdAndUpdate(itemExistente._id, {
+        cantidad: itemExistente.cantidad,
+        total: itemExistente.total
+    });
     } else {
         // Crear nuevo item
         const nuevoItem = new Item({
@@ -220,10 +226,10 @@ async addClienteCarroItem(id, itemData) {
         });
         await nuevoItem.save();
         
-        // ⚠️ CORRECCIÓN CLAVE: 1. Añadir el ID al array en memoria
+        // Añadir el ID al array en memoria
         carro.items.push(nuevoItem._id);
 
-        // ⚠️ CORRECCIÓN CLAVE: 2. Persistir el array actualizado en la DB
+        // Persistir el array actualizado en la DB
         await Carro.findByIdAndUpdate(carro._id, { items: carro.items });
     }
     
