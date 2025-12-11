@@ -22,12 +22,9 @@ app.use(express.urlencoded({ extended: true }));
 const uri = 'mongodb://127.0.0.1/libreria';
 // Conectar a MongoDB
 mongoose.connect(uri)
-  .then(() => {
+  .then(async() => {
     console.log('MongoDB connected');
-    return seed();
-  })
-  .then(() => {
-    console.log('Database seeded');
+    await seed();
   })
   .catch(err => console.error('MongoDB connection error:', err));
 // ============================================

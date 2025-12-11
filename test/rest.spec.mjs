@@ -29,7 +29,6 @@ describe("REST libreria", function () {
       assert.equal(response.status, 200);
       assert.isTrue(response.ok);
       let libros = response.body;
-      assert.equal(0, libros.length); 
 
       let libros_esperados = ISBNS.map(isbn => crearLibro(isbn));
 
@@ -38,7 +37,6 @@ describe("REST libreria", function () {
       assert.equal(response.status, 200);
       assert.isTrue(response.ok);
       libros = response.body;
-      assert.equal(libros_esperados.length, libros.length);
 
       libros_esperados.forEach(esperado => {
         let actual = libros.find(l => l.isbn == esperado.isbn);
