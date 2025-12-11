@@ -24,7 +24,7 @@ const uri = 'mongodb://127.0.0.1/libreria';
 mongoose.connect(uri)
   .then(async() => {
     console.log('MongoDB connected');
-    await seed();
+    //await seed();
   })
   .catch(err => console.error('MongoDB connection error:', err));
 // ============================================

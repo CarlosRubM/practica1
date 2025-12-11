@@ -122,7 +122,7 @@ export async function seed() {
 }
 
 // Ejecución del seed (solo si se ejecuta directamente este archivo)
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1].includes('seeder.mjs')) {
   try {
     await mongoose.connect(uri);
     await seed();
